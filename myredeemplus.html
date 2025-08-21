@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyRedeemPlus Documentation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .navbar {
+      background: rgba(26, 32, 44, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+    }
+    .navbar a {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .navbar a:hover::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #60a5fa;
+      transform: scaleX(1);
+      transform-origin: bottom right;
+      transition: transform 0.3s ease;
+    }
+    .navbar a::after {
+      transform: scaleX(0);
+      transform-origin: bottom left;
+    }
+    .language-selector-container {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-block;
+      text-align: center;
+    }
+    .language-selector {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .language-selector:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .language-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2d3748;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 30;
+      max-height: 300px;
+      overflow-y: auto;
+      min-width: 150px;
+    }
+    .language-dropdown.active {
+      display: block;
+    }
+    .language-option {
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .language-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .language-option img {
+      width: 24px;
+      height: 24px;
+    }
+    select.language-selector-hidden {
+      display: none;
+    }
+    @media (max-width: 640px) {
+      .navbar {
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      .language-selector-container {
+        position: static;
+        transform: none;
+        width: 100%;
+        margin: 1rem 0;
+        order: 2;
+        text-align: center;
+      }
+      .language-selector {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        font-size: 1rem;
+        padding: 0.75rem;
+        justify-content: center;
+      }
+      .language-dropdown {
+        width: 100%;
+        max-width: 300px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .hamburger {
+        display: block;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #e2e8f0;
+        transition: transform 0.3s ease;
+        order: 1;
+      }
+      .hamburger.active {
+        transform: rotate(90deg);
+      }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(26, 32, 44, 0.95);
+        padding: 1rem;
+        opacity: 0;
+        transform: translateY(-20px);
+        order: 3;
+      }
+      .nav-links.active {
+        display: flex;
+        animation: slideInMenu 0.5s ease-out forwards;
+      }
+      @keyframes slideInMenu {
+        0% { opacity: 0; transform: translateY(-20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+    }
+    pre {
+      background: rgba(45, 55, 72, 0.95);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    code {
+      font-family: 'Courier New', Courier, monospace;
+      color: #e2e8f0;
+    }
+    .review-card {
+      background: rgba(45, 55, 72, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .review-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .star {
+      color: #f6e05e;
+    }
+    h1 {
+      color: #60a5fa;
+      font-size: 2rem;
+    }
+    #rating, #downloads, #updated {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(45, 55, 72, 0.95);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+    }
+    #rating strong, #downloads strong, #updated strong {
+      color: #e2e8f0;
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    #rating span, #downloads span, #updated span {
+      color: #a0aec0;
+      font-weight: 500;
+    }
+    #rating::before {
+      content: '⭐';
+      margin-right: 0.5rem;
+      color: #f6e05e;
+    }
+    #downloads::before {
+      content: '⬇';
+      margin-right: 0.5rem;
+      color: #60a5fa;
+    }
+    #updated::before {
+      content: '⏰';
+      margin-right: 0.5rem;
+      color: #a0aec0;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    // Language translations
+    const translations = {
+      en: {
+        title: "MyRedeemPlus Documentation",
+        header: "OkiTask Plugins",
+        nav_home: "Home",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Create and manage redeemable codes to reward players on your Minecraft server. Features tracking of code usage, expiration dates, and custom commands. Supports Minecraft versions 1.7 to 1.21.",
+        purchase_desc: "Purchase the plugin on BuiltByBit: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Rating:</strong> <span>5/5 (5 ratings)</span>",
+        downloads: "<strong>Downloads:</strong> <span>11</span>",
+        updated: "<strong>Updated:</strong> <span>Aug 3, 2025</span>",
+        installation_title: "Installation",
+        installation_steps: [
+          "Download the latest version from <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a>.",
+          "Place the <code>MyRedeemPlus.jar</code> file in your server's <code>plugins</code> folder.",
+          "Join the Discord and request the <code>license</code>.",
+          "Restart your server to load the plugin.",
+          "Configure the plugin in <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Commands",
+        commands_user_desc: "User Commands (Permission: <code>myredeemplus.use</code>, Aliases: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Redeem a code to receive rewards."
+        ],
+        commands_staff_desc: "Staff Commands (Permission: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Reload the plugin configuration.",
+          "<code>/myredeem help</code> - List all commands.",
+          "<code>/myredeem gui</code> - Open a GUI showing all existing codes.",
+          "<code>/myredeem info</code> - Open a GUI with info about a specific code.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Check a player's redeemed codes.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Reset a player's redeemed code.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Create a random code.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Create a specific code.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Delete a code.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Add a command to a code.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Delete a command from a code.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Set the number of uses for a code."
+        ],
+        placeholders_title: "Placeholders",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Shows the total redeemed codes by the player.",
+          "<code>%myredeemplus_total_codes%</code> - Shows the total number of existing codes.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Shows the status of a code (e.g., redeemed, exists, etc.)."
+        ],
+        config_title: "Configuration",
+        config_desc: "Edit the configuration file located at <code>plugins/MyRedeemPlus/config.yml</code>. Below is an example configuration:",
+        config_codes_desc: "Edit the codes file located at <code>plugins/MyRedeemPlus/codes.yml</code>. Below are example codes:",
+        config_lang_desc: "Supports multiple languages: English, Italian, Romanian, German, Vietnamese, Spanish, French, Hungarian, Turkish, Portuguese, Czech, Polish, Russian, Ukrainian, and custom languages.",
+        usage_title: "Usage Example",
+        usage_desc: "To create a code that gives players a diamond and a welcome message:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Welcome to the server, %player%!</code>",
+        usage_player_desc: "Players can redeem it using <code>/redeem welcomecode</code>, receiving one diamond and a message (up to 10 uses, 1 per IP).",
+        support_title: "Support",
+        support_desc: "Found a bug or need help? Join our Discord server for fast and excellent support: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Join Discord</a>.",
+        support_note: "Please do not report bugs in BuiltByBit reviews. Use the Discord server for bug reports and support requests.",
+        tos_title: "Terms of Service",
+        tos_list: [
+          "You cannot sell this plugin.",
+          "You cannot decompile it.",
+          "You cannot use parts of the plugin code.",
+          "You cannot claim this plugin as your own."
+        ],
+        reviews_title: "Reviews",
+        reviews_desc: "Our community loves MyRedeemPlus! With an average rating of <strong>5/5</strong> from 5 reviews on BuiltByBit, here’s what users are saying:",
+        reviews_feedback: "Have you tried MyRedeemPlus? Share your feedback on <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> and help our community grow!",
+        footer_copyright: "&copy; 2025 OkiTask. All rights reserved.",
+        footer_follow: "Follow me on",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Join Discord"
+      },
+      it: {
+        title: "Documentazione MyRedeemPlus",
+        header: "Plugin OkiTask",
+        nav_home: "Home",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Crea e gestisci codici riscattabili per premiare i giocatori sul tuo server Minecraft. Include il monitoraggio dell'uso dei codici, date di scadenza e comandi personalizzati. Supporta le versioni di Minecraft da 1.7 a 1.21.",
+        purchase_desc: "Acquista il plugin su BuiltByBit: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Valutazione:</strong> <span>5/5 (5 valutazioni)</span>",
+        downloads: "<strong>Download:</strong> <span>11</span>",
+        updated: "<strong>Aggiornato:</strong> <span>3 Agosto 2025</span>",
+        installation_title: "Installazione",
+        installation_steps: [
+          "Scarica l'ultima versione da <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a>.",
+          "Inserisci il file <code>MyRedeemPlus.jar</code> nella cartella <code>plugins</code> del tuo server.",
+          "Unisciti al Discord e richiedi la <code>licenza</code>.",
+          "Riavvia il server per caricare il plugin.",
+          "Configura il plugin in <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Comandi",
+        commands_user_desc: "Comandi Utente (Permesso: <code>myredeemplus.use</code>, Alias: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Riscatta un codice per ricevere premi."
+        ],
+        commands_staff_desc: "Comandi Staff (Permesso: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Ricarica la configurazione del plugin.",
+          "<code>/myredeem help</code> - Elenca tutti i comandi.",
+          "<code>/myredeem gui</code> - Apre una GUI che mostra tutti i codici esistenti.",
+          "<code>/myredeem info</code> - Apre una GUI con informazioni su un codice specifico.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Controlla i codici riscattati da un giocatore.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Resetta un codice riscattato da un giocatore.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Crea un codice casuale.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Crea un codice specifico.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Elimina un codice.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Aggiunge un comando a un codice.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Elimina un comando da un codice.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Imposta il numero di utilizzi per un codice."
+        ],
+        placeholders_title: "Segnaposto",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Mostra il totale dei codici riscattati dal giocatore.",
+          "<code>%myredeemplus_total_codes%</code> - Mostra il numero totale di codici esistenti.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Mostra lo stato di un codice (es. riscattato, esiste, ecc.)."
+        ],
+        config_title: "Configurazione",
+        config_desc: "Modifica il file di configurazione situato in <code>plugins/MyRedeemPlus/config.yml</code>. Di seguito un esempio di configurazione:",
+        config_codes_desc: "Modifica il file dei codici situato in <code>plugins/MyRedeemPlus/codes.yml</code>. Di seguito alcuni esempi di codici:",
+        config_lang_desc: "Supporta più lingue: Inglese, Italiano, Rumeno, Tedesco, Vietnamita, Spagnolo, Francese, Ungherese, Turco, Portoghese, Ceco, Polacco, Russo, Ucraino e lingue personalizzate.",
+        usage_title: "Esempio di Utilizzo",
+        usage_desc: "Per creare un codice che dà ai giocatori un diamante e un messaggio di benvenuto:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Benvenuto nel server, %player%!</code>",
+        usage_player_desc: "I giocatori possono riscattarlo usando <code>/redeem welcomecode</code>, ricevendo un diamante e un messaggio (fino a 10 utilizzi, 1 per IP).",
+        support_title: "Supporto",
+        support_desc: "Hai trovato un bug o hai bisogno di aiuto? Unisciti al nostro server Discord per un supporto rapido ed eccellente: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Unisciti a Discord</a>.",
+        support_note: "Per favore, non segnalare bug nelle recensioni di BuiltByBit. Usa il server Discord per segnalazioni di bug e richieste di supporto.",
+        tos_title: "Termini di Servizio",
+        tos_list: [
+          "Non puoi vendere questo plugin.",
+          "Non puoi decompilarlo.",
+          "Non puoi utilizzare parti del codice del plugin.",
+          "Non puoi reclamare questo plugin come tuo."
+        ],
+        reviews_title: "Recensioni",
+        reviews_desc: "La nostra comunità ama MyRedeemPlus! Con una valutazione media di <strong>5/5</strong> da 5 recensioni su BuiltByBit, ecco cosa dicono gli utenti:",
+        reviews_feedback: "Hai provato MyRedeemPlus? Condividi il tuo feedback su <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> e aiuta la nostra comunità a crescere!",
+        footer_copyright: "&copy; 2025 OkiTask. Tutti i diritti riservati.",
+        footer_follow: "Seguimi su",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Unisciti a Discord"
+      },
+      ro: {
+        title: "Documentație MyRedeemPlus",
+        header: "Pluginuri OkiTask",
+        nav_home: "Acasă",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Creează și gestionează coduri răscumpărabile pentru a recompensa jucătorii pe serverul tău Minecraft. Include urmărirea utilizării codurilor, date de expirare și comenzi personalizate. Suportă versiunile Minecraft de la 1.7 la 1.21.",
+        purchase_desc: "Achiziționează pluginul pe BuiltByBit: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Evaluare:</strong> <span>5/5 (5 evaluări)</span>",
+        downloads: "<strong>Descărcări:</strong> <span>11</span>",
+        updated: "<strong>Actualizat:</strong> <span>3 August 2025</span>",
+        installation_title: "Instalare",
+        installation_steps: [
+          "Descarcă cea mai recentă versiune de pe <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a>.",
+          "Plasează fișierul <code>MyRedeemPlus.jar</code> în folderul <code>plugins</code> al serverului tău.",
+          "Alătură-te serverului Discord și solicită <code>licența</code>.",
+          "Repornește serverul pentru a încărca pluginul.",
+          "Configurează pluginul în <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Comenzi",
+        commands_user_desc: "Comenzi pentru utilizatori (Permisiune: <code>myredeemplus.use</code>, Aliasuri: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Răscumpără un cod pentru a primi recompense."
+        ],
+        commands_staff_desc: "Comenzi pentru staff (Permisiune: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Reîncarcă configurația pluginului.",
+          "<code>/myredeem help</code> - Listează toate comenzile.",
+          "<code>/myredeem gui</code> - Deschide o interfață grafică care afișează toate codurile existente.",
+          "<code>/myredeem info</code> - Deschide o interfață grafică cu informații despre un cod specific.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Verifică codurile răscumpărate de un jucător.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Resetează un cod răscumpărat de un jucător.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Creează un cod aleatoriu.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Creează un cod specific.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Șterge un cod.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Adaugă o comandă la un cod.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Șterge o comandă dintr-un cod.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Setează numărul de utilizări pentru un cod."
+        ],
+        placeholders_title: "Marcatori",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Afișează numărul total de coduri răscumpărate de jucător.",
+          "<code>%myredeemplus_total_codes%</code> - Afișează numărul total de coduri existente.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Afișează starea unui cod (ex. răscumpărat, existent, etc.)."
+        ],
+        config_title: "Configurare",
+        config_desc: "Editează fișierul de configurare situat în <code>plugins/MyRedeemPlus/config.yml</code>. Mai jos este un exemplu de configurare:",
+        config_codes_desc: "Editează fișierul de coduri situat în <code>plugins/MyRedeemPlus/codes.yml</code>. Mai jos sunt exemple de coduri:",
+        config_lang_desc: "Suportă mai multe limbi: Engleză, Italiană, Română, Germană, Vietnameză, Spaniolă, Franceză, Maghiară, Turcă, Portugheză, Cehă, Poloneză, Rusă, Ucraineană și limbi personalizate.",
+        usage_title: "Exemplu de utilizare",
+        usage_desc: "Pentru a crea un cod care oferă jucătorilor un diamant și un mesaj de bun venit:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Bun venit pe server, %player%!</code>",
+        usage_player_desc: "Jucătorii pot răscumpăra codul folosind <code>/redeem welcomecode</code>, primind un diamant și un mesaj (până la 10 utilizări, 1 per IP).",
+        support_title: "Suport",
+        support_desc: "Ai găsit o eroare sau ai nevoie de ajutor? Alătură-te serverului nostru Discord pentru suport rapid și excelent: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Alătură-te pe Discord</a>.",
+        support_note: "Te rugăm să nu raportezi erori în recenziile BuiltByBit. Folosește serverul Discord pentru raportarea erorilor și cererile de suport.",
+        tos_title: "Termeni de serviciu",
+        tos_list: [
+          "Nu poți vinde acest plugin.",
+          "Nu îl poți decompila.",
+          "Nu poți folosi părți din codul pluginului.",
+          "Nu poți pretinde că acest plugin este al tău."
+        ],
+        reviews_title: "Recenzii",
+        reviews_desc: "Comunitatea noastră iubește MyRedeemPlus! Cu o evaluare medie de <strong>5/5</strong> din 5 recenzii pe BuiltByBit, iată ce spun utilizatorii:",
+        reviews_feedback: "Ai încercat MyRedeemPlus? Împărtășește-ți feedback-ul pe <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> și ajută comunitatea noastră să crească!",
+        footer_copyright: "&copy; 2025 OkiTask. Toate drepturile rezervate.",
+        footer_follow: "Urmărește-mă pe",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Alătură-te pe Discord"
+      },
+      de: {
+        title: "MyRedeemPlus Dokumentation",
+        header: "OkiTask Plugins",
+        nav_home: "Startseite",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Erstelle und verwalte einlösbare Codes, um Spieler auf deinem Minecraft-Server zu belohnen. Enthält die Verfolgung der Code-Nutzung, Ablaufdaten und benutzerdefinierte Befehle. Unterstützt Minecraft-Versionen von 1.7 bis 1.21.",
+        purchase_desc: "Kaufe das Plugin auf BuiltByBit: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Bewertung:</strong> <span>5/5 (5 Bewertungen)</span>",
+        downloads: "<strong>Downloads:</strong> <span>11</span>",
+        updated: "<strong>Aktualisiert:</strong> <span>3. August 2025</span>",
+        installation_title: "Installation",
+        installation_steps: [
+          "Lade die neueste Version von <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> herunter.",
+          "Platziere die Datei <code>MyRedeemPlus.jar</code> im Ordner <code>plugins</code> deines Servers.",
+          "Tritt dem Discord-Server bei und fordere die <code>Lizenz</code> an.",
+          "Starte deinen Server neu, um das Plugin zu laden.",
+          "Konfiguriere das Plugin in <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Befehle",
+        commands_user_desc: "Benutzerbefehle (Berechtigung: <code>myredeemplus.use</code>, Aliase: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Einen Code einlösen, um Belohnungen zu erhalten."
+        ],
+        commands_staff_desc: "Mitarbeiterbefehle (Berechtigung: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Lädt die Plugin-Konfiguration neu.",
+          "<code>/myredeem help</code> - Listet alle Befehle auf.",
+          "<code>/myredeem gui</code> - Öffnet eine GUI, die alle vorhandenen Codes anzeigt.",
+          "<code>/myredeem info</code> - Öffnet eine GUI mit Informationen zu einem bestimmten Code.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Überprüft die eingelösten Codes eines Spielers.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Setzt einen eingelösten Code eines Spielers zurück.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Erstellt einen zufälligen Code.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Erstellt einen bestimmten Code.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Löscht einen Code.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Fügt einem Code einen Befehl hinzu.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Löscht einen Befehl aus einem Code.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Legt die Anzahl der Verwendungen für einen Code fest."
+        ],
+        placeholders_title: "Platzhalter",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Zeigt die Gesamtzahl der eingelösten Codes eines Spielers an.",
+          "<code>%myredeemplus_total_codes%</code> - Zeigt die Gesamtzahl der vorhandenen Codes an.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Zeigt den Status eines Codes an (z.B. eingelöst, vorhanden, etc.)."
+        ],
+        config_title: "Konfiguration",
+        config_desc: "Bearbeite die Konfigurationsdatei unter <code>plugins/MyRedeemPlus/config.yml</code>. Nachfolgend ein Beispiel für eine Konfiguration:",
+        config_codes_desc: "Bearbeite die Codedatei unter <code>plugins/MyRedeemPlus/codes.yml</code>. Nachfolgend einige Beispielcodes:",
+        config_lang_desc: "Unterstützt mehrere Sprachen: Englisch, Italienisch, Rumänisch, Deutsch, Vietnamesisch, Spanisch, Französisch, Ungarisch, Türkisch, Portugiesisch, Tschechisch, Polnisch, Russisch, Ukrainisch und benutzerdefinierte Sprachen.",
+        usage_title: "Nutzungsbeispiel",
+        usage_desc: "Um einen Code zu erstellen, der Spielern einen Diamanten und eine Willkommensnachricht gibt:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Willkommen auf dem Server, %player%!</code>",
+        usage_player_desc: "Spieler können den Code mit <code>/redeem welcomecode</code> einlösen und erhalten einen Diamanten und eine Nachricht (bis zu 10 Nutzungen, 1 pro IP).",
+        support_title: "Support",
+        support_desc: "Hast du einen Fehler gefunden oder benötigst du Hilfe? Tritt unserem Discord-Server für schnellen und hervorragenden Support bei: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Tritt Discord bei</a>.",
+        support_note: "Bitte melde keine Fehler in den BuiltByBit-Bewertungen. Nutze den Discord-Server für Fehlerberichte und Supportanfragen.",
+        tos_title: "Nutzungsbedingungen",
+        tos_list: [
+          "Du darfst dieses Plugin nicht verkaufen.",
+          "Du darfst es nicht dekompilieren.",
+          "Du darfst keine Teile des Plugin-Codes verwenden.",
+          "Du darfst dieses Plugin nicht als dein eigenes ausgeben."
+        ],
+        reviews_title: "Bewertungen",
+        reviews_desc: "Unsere Community liebt MyRedeemPlus! Mit einer durchschnittlichen Bewertung von <strong>5/5</strong> aus 5 Bewertungen auf BuiltByBit, hier ist, was die Nutzer sagen:",
+        reviews_feedback: "Hast du MyRedeemPlus ausprobiert? Teile dein Feedback auf <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> und hilf unserer Community zu wachsen!",
+        footer_copyright: "&copy; 2025 OkiTask. Alle Rechte vorbehalten.",
+        footer_follow: "Folge mir auf",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Tritt Discord bei"
+      },
+      vi: {
+        title: "Tài liệu MyRedeemPlus",
+        header: "Plugin OkiTask",
+        nav_home: "Trang chủ",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Tạo và quản lý các mã đổi thưởng để thưởng cho người chơi trên server Minecraft của bạn. Tính năng bao gồm theo dõi việc sử dụng mã, ngày hết hạn và lệnh tùy chỉnh. Hỗ trợ các phiên bản Minecraft từ 1.7 đến 1.21.",
+        purchase_desc: "Mua plugin trên BuiltByBit: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Đánh giá:</strong> <span>5/5 (5 đánh giá)</span>",
+        downloads: "<strong>Tải xuống:</strong> <span>11</span>",
+        updated: "<strong>Cập nhật:</strong> <span>3 Tháng 8, 2025</span>",
+        installation_title: "Cài đặt",
+        installation_steps: [
+          "Tải phiên bản mới nhất từ <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a>.",
+          "Đặt tệp <code>MyRedeemPlus.jar</code> vào thư mục <code>plugins</code> của server.",
+          "Tham gia Discord và yêu cầu <code>giấy phép</code>.",
+          "Khởi động lại server để tải plugin.",
+          "Cấu hình plugin trong <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Lệnh",
+        commands_user_desc: "Lệnh người dùng (Quyền: <code>myredeemplus.use</code>, Bí danh: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Đổi mã để nhận phần thưởng."
+        ],
+        commands_staff_desc: "Lệnh nhân viên (Quyền: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Tải lại cấu hình plugin.",
+          "<code>/myredeem help</code> - Liệt kê tất cả các lệnh.",
+          "<code>/myredeem gui</code> - Mở GUI hiển thị tất cả các mã hiện có.",
+          "<code>/myredeem info</code> - Mở GUI với thông tin về một mã cụ thể.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Kiểm tra các mã đã đổi của một người chơi.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Đặt lại mã đã đổi của một người chơi.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Tạo một mã ngẫu nhiên.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Tạo một mã cụ thể.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Xóa một mã.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Thêm một lệnh vào mã.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Xóa một lệnh khỏi mã.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Đặt số lần sử dụng cho một mã."
+        ],
+        placeholders_title: "Thẻ thay thế",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Hiển thị tổng số mã đã đổi của người chơi.",
+          "<code>%myredeemplus_total_codes%</code> - Hiển thị tổng số mã hiện có.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Hiển thị trạng thái của một mã (ví dụ: đã đổi, tồn tại, v.v.)."
+        ],
+        config_title: "Cấu hình",
+        config_desc: "Chỉnh sửa tệp cấu hình tại <code>plugins/MyRedeemPlus/config.yml</code>. Dưới đây là một ví dụ cấu hình:",
+        config_codes_desc: "Chỉnh sửa tệp mã tại <code>plugins/MyRedeemPlus/codes.yml</code>. Dưới đây là các ví dụ mã:",
+        config_lang_desc: "Hỗ trợ nhiều ngôn ngữ: Anh, Ý, Rumani, Đức, Việt Nam, Tây Ban Nha, Pháp, Hungary, Thổ Nhĩ Kỳ, Bồ Đào Nha, Séc, Ba Lan, Nga, Ukraine và các ngôn ngữ tùy chỉnh.",
+        usage_title: "Ví dụ sử dụng",
+        usage_desc: "Để tạo một mã cung cấp cho người chơi một viên kim cương và một thông điệp chào mừng:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Chào mừng đến với server, %player%!</code>",
+        usage_player_desc: "Người chơi có thể đổi mã bằng <code>/redeem welcomecode</code>, nhận được một viên kim cương và một thông điệp (tối đa 10 lần sử dụng, 1 lần mỗi IP).",
+        support_title: "Hỗ trợ",
+        support_desc: "Tìm thấy lỗi hoặc cần trợ giúp? Tham gia server Discord của chúng tôi để được hỗ trợ nhanh chóng và tuyệt vời: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Tham gia Discord</a>.",
+        support_note: "Vui lòng không báo cáo lỗi trong các đánh giá BuiltByBit. Sử dụng server Discord để báo cáo lỗi và yêu cầu hỗ trợ.",
+        tos_title: "Điều khoản dịch vụ",
+        tos_list: [
+          "Bạn không thể bán plugin này.",
+          "Bạn không thể dịch ngược nó.",
+          "Bạn không thể sử dụng các phần của mã plugin.",
+          "Bạn không thể nhận plugin này là của bạn."
+        ],
+        reviews_title: "Đánh giá",
+        reviews_desc: "Cộng đồng của chúng tôi yêu thích MyRedeemPlus! Với đánh giá trung bình <strong>5/5</strong> từ 5 đánh giá trên BuiltByBit, đây là những gì người dùng nói:",
+        reviews_feedback: "Bạn đã thử MyRedeemPlus chưa? Chia sẻ phản hồi của bạn trên <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> và giúp cộng đồng của chúng tôi phát triển!",
+        footer_copyright: "&copy; 2025 OkiTask. Tất cả quyền được bảo lưu.",
+        footer_follow: "Theo dõi tôi trên",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Tham gia Discord"
+      },
+      es: {
+        title: "Documentación de MyRedeemPlus",
+        header: "Plugins OkiTask",
+        nav_home: "Inicio",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Crea y gestiona códigos canjeables para recompensar a los jugadores en tu servidor de Minecraft. Incluye seguimiento del uso de códigos, fechas de vencimiento y comandos personalizados. Compatible con las versiones de Minecraft de 1.7 a 1.21.",
+        purchase_desc: "Compra el plugin en BuiltByBit: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Calificación:</strong> <span>5/5 (5 calificaciones)</span>",
+        downloads: "<strong>Descargas:</strong> <span>11</span>",
+        updated: "<strong>Actualizado:</strong> <span>3 de agosto de 2025</span>",
+        installation_title: "Instalación",
+        installation_steps: [
+          "Descarga la última versión desde <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a>.",
+          "Coloca el archivo <code>MyRedeemPlus.jar</code> en la carpeta <code>plugins</code> de tu servidor.",
+          "Únete al Discord y solicita la <code>licencia</code>.",
+          "Reinicia tu servidor para cargar el plugin.",
+          "Configura el plugin en <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Comandos",
+        commands_user_desc: "Comandos de usuario (Permiso: <code>myredeemplus.use</code>, Alias: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Canjea un código para recibir recompensas."
+        ],
+        commands_staff_desc: "Comandos de staff (Permiso: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Recarga la configuración del plugin.",
+          "<code>/myredeem help</code> - Lista todos los comandos.",
+          "<code>/myredeem gui</code> - Abre una GUI que muestra todos los códigos existentes.",
+          "<code>/myredeem info</code> - Abre una GUI con información sobre un código específico.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Verifica los códigos canjeados por un jugador.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Restablece un código canjeado por un jugador.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Crea un código aleatorio.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Crea un código específico.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Elimina un código.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Añade un comando a un código.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Elimina un comando de un código.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Establece el número de usos para un código."
+        ],
+        placeholders_title: "Marcadores",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Muestra el total de códigos canjeados por el jugador.",
+          "<code>%myredeemplus_total_codes%</code> - Muestra el número total de códigos existentes.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Muestra el estado de un código (por ejemplo, canjeado, existente, etc.)."
+        ],
+        config_title: "Configuración",
+        config_desc: "Edita el archivo de configuración ubicado en <code>plugins/MyRedeemPlus/config.yml</code>. A continuación, un ejemplo de configuración:",
+        config_codes_desc: "Edita el archivo de códigos ubicado en <code>plugins/MyRedeemPlus/codes.yml</code>. A continuación, algunos ejemplos de códigos:",
+        config_lang_desc: "Soporta múltiples idiomas: Inglés, Italiano, Rumano, Alemán, Vietnamita, Español, Francés, Húngaro, Turco, Portugués, Checo, Polaco, Ruso, Ucraniano y idiomas personalizados.",
+        usage_title: "Ejemplo de uso",
+        usage_desc: "Para crear un código que otorgue a los jugadores un diamante y un mensaje de bienvenida:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say ¡Bienvenido al servidor, %player%!</code>",
+        usage_player_desc: "Los jugadores pueden canjearlo usando <code>/redeem welcomecode</code>, recibiendo un diamante y un mensaje (hasta 10 usos, 1 por IP).",
+        support_title: "Soporte",
+        support_desc: "¿Encontraste un error o necesitas ayuda? Únete a nuestro servidor de Discord para un soporte rápido y excelente: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Unirse a Discord</a>.",
+        support_note: "Por favor, no reportes errores en las reseñas de BuiltByBit. Usa el servidor de Discord para reportar errores y solicitudes de soporte.",
+        tos_title: "Términos de servicio",
+        tos_list: [
+          "No puedes vender este plugin.",
+          "No puedes descompilarlo.",
+          "No puedes usar partes del código del plugin.",
+          "No puedes reclamar este plugin como propio."
+        ],
+        reviews_title: "Reseñas",
+        reviews_desc: "¡Nuestra comunidad ama MyRedeemPlus! Con una calificación promedio de <strong>5/5</strong> de 5 reseñas en BuiltByBit, esto es lo que dicen los usuarios:",
+        reviews_feedback: "¿Has probado MyRedeemPlus? Comparte tus comentarios en <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> y ayuda a nuestra comunidad a crecer!",
+        footer_copyright: "&copy; 2025 OkiTask. Todos los derechos reservados.",
+        footer_follow: "Sígueme en",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Unirse a Discord"
+      },
+      fr: {
+        title: "Documentation MyRedeemPlus",
+        header: "Plugins OkiTask",
+        nav_home: "Accueil",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Créez et gérez des codes échangeables pour récompenser les joueurs sur votre serveur Minecraft. Inclut le suivi de l'utilisation des codes, les dates d'expiration et les commandes personnalisées. Compatible avec les versions de Minecraft de 1.7 à 1.21.",
+        purchase_desc: "Achetez le plugin sur BuiltByBit : <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Note :</strong> <span>5/5 (5 avis)</span>",
+        downloads: "<strong>Téléchargements :</strong> <span>11</span>",
+        updated: "<strong>Mis à jour :</strong> <span>3 août 2025</span>",
+        installation_title: "Installation",
+        installation_steps: [
+          "Téléchargez la dernière version sur <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a>.",
+          "Placez le fichier <code>MyRedeemPlus.jar</code> dans le dossier <code>plugins</code> de votre serveur.",
+          "Rejoignez le Discord et demandez la <code>licence</code>.",
+          "Redémarrez votre serveur pour charger le plugin.",
+          "Configurez le plugin dans <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Commandes",
+        commands_user_desc: "Commandes utilisateur (Permission : <code>myredeemplus.use</code>, Alias : <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Échangez un code pour recevoir des récompenses."
+        ],
+        commands_staff_desc: "Commandes du staff (Permission : <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Recharge la configuration du plugin.",
+          "<code>/myredeem help</code> - Liste toutes les commandes.",
+          "<code>/myredeem gui</code> - Ouvre une interface graphique affichant tous les codes existants.",
+          "<code>/myredeem info</code> - Ouvre une interface graphique avec des informations sur un code spécifique.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Vérifie les codes échangés par un joueur.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Réinitialise un code échangé par un joueur.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Crée un code aléatoire.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Crée un code spécifique.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Supprime un code.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Ajoute une commande à un code.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Supprime une commande d'un code.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Définit le nombre d'utilisations pour un code."
+        ],
+        placeholders_title: "Marqueurs",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Affiche le total des codes échangés par le joueur.",
+          "<code>%myredeemplus_total_codes%</code> - Affiche le nombre total de codes existants.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Affiche l'état d'un code (par exemple, échangé, existant, etc.)."
+        ],
+        config_title: "Configuration",
+        config_desc: "Modifiez le fichier de configuration situé dans <code>plugins/MyRedeemPlus/config.yml</code>. Voici un exemple de configuration :",
+        config_codes_desc: "Modifiez le fichier des codes situé dans <code>plugins/MyRedeemPlus/codes.yml</code>. Voici quelques exemples de codes :",
+        config_lang_desc: "Prend en charge plusieurs langues : anglais, italien, roumain, allemand, vietnamien, espagnol, français, hongrois, turc, portugais, tchèque, polonais, russe, ukrainien et langues personnalisées.",
+        usage_title: "Exemple d'utilisation",
+        usage_desc: "Pour créer un code qui donne aux joueurs un diamant et un message de bienvenue :",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Bienvenue sur le serveur, %player% !</code>",
+        usage_player_desc: "Les joueurs peuvent l'échanger en utilisant <code>/redeem welcomecode</code>, recevant un diamant et un message (jusqu'à 10 utilisations, 1 par IP).",
+        support_title: "Support",
+        support_desc: "Vous avez trouvé un bug ou besoin d'aide ? Rejoignez notre serveur Discord pour un support rapide et excellent : <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Rejoindre Discord</a>.",
+        support_note: "Veuillez ne pas signaler les bugs dans les avis BuiltByBit. Utilisez le serveur Discord pour les rapports de bugs et les demandes de support.",
+        tos_title: "Conditions de service",
+        tos_list: [
+          "Vous ne pouvez pas vendre ce plugin.",
+          "Vous ne pouvez pas le décompiler.",
+          "Vous ne pouvez pas utiliser des parties du code du plugin.",
+          "Vous ne pouvez pas prétendre que ce plugin est le vôtre."
+        ],
+        reviews_title: "Avis",
+        reviews_desc: "Notre communauté adore MyRedeemPlus ! Avec une note moyenne de <strong>5/5</strong> sur 5 avis sur BuiltByBit, voici ce que disent les utilisateurs :",
+        reviews_feedback: "Avez-vous essayé MyRedeemPlus ? Partagez vos commentaires sur <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> et aidez notre communauté à grandir !",
+        footer_copyright: "&copy; 2025 OkiTask. Tous droits réservés.",
+        footer_follow: "Suivez-moi sur",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Rejoindre Discord"
+      },
+      hu: {
+        title: "MyRedeemPlus Dokumentáció",
+        header: "OkiTask Bővítmények",
+        nav_home: "Kezdőlap",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Hozz létre és kezelj beváltható kódokat, hogy megjutalmazd a játékosokat a Minecraft szervereden. Tartalmazza a kódhasználat nyomon követését, lejárati dátumokat és egyéni parancsokat. Támogatja a Minecraft 1.7-től 1.21-ig terjedő verzióit.",
+        purchase_desc: "Vásárold meg a bővítményt a BuiltByBit oldalon: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Értékelés:</strong> <span>5/5 (5 értékelés)</span>",
+        downloads: "<strong>Letöltések:</strong> <span>11</span>",
+        updated: "<strong>Frissítve:</strong> <span>2025. augusztus 3.</span>",
+        installation_title: "Telepítés",
+        installation_steps: [
+          "Töltsd le a legfrissebb verziót a <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> oldalról.",
+          "Helyezd a <code>MyRedeemPlus.jar</code> fájlt a szerver <code>plugins</code> mappájába.",
+          "Csatlakozz a Discord szerverhez és kérd a <code>licencet</code>.",
+          "Indítsd újra a szervert a bővítmény betöltéséhez.",
+          "Állítsd be a bővítményt a <code>plugins/MyRedeemPlus/config.yml</code> fájlban."
+        ],
+        commands_title: "Parancsok",
+        commands_user_desc: "Felhasználói parancsok (Engedély: <code>myredeemplus.use</code>, Aliasok: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Kód beváltása jutalmakért."
+        ],
+        commands_staff_desc: "Személyzeti parancsok (Engedély: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Újratölti a bővítmény konfigurációját.",
+          "<code>/myredeem help</code> - Felsorolja az összes parancsot.",
+          "<code>/myredeem gui</code> - Megnyit egy grafikus felületet, amely megjeleníti az összes létező kódot.",
+          "<code>/myredeem info</code> - Megnyit egy grafikus felületet egy adott kód adataival.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Ellenőrzi egy játékos beváltott kódjait.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Visszaállít egy játékos által beváltott kódot.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Véletlenszerű kód létrehozása.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Specifikus kód létrehozása.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Kód törlése.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Parancs hozzáadása egy kódhoz.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Parancs törlése egy kódból.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Beállítja egy kód használati számát."
+        ],
+        placeholders_title: "Helykitöltők",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Megjeleníti a játékos által beváltott kódok számát.",
+          "<code>%myredeemplus_total_codes%</code> - Megjeleníti a létező kódok teljes számát.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Megjeleníti egy kód állapotát (pl. beváltott, létező, stb.)."
+        ],
+        config_title: "Konfiguráció",
+        config_desc: "Szerkeszd a konfigurációs fájlt a <code>plugins/MyRedeemPlus/config.yml</code> helyen. Íme egy példa konfiguráció:",
+        config_codes_desc: "Szerkeszd a kódok fájlját a <code>plugins/MyRedeemPlus/codes.yml</code> helyen. Íme néhány példa kód:",
+        config_lang_desc: "Támogat több nyelvet: angol, olasz, román, német, vietnámi, spanyol, francia, magyar, török, portugál, cseh, lengyel, orosz, ukrán és egyéni nyelvek.",
+        usage_title: "Használati példa",
+        usage_desc: "Kód létrehozása, amely gyémántot és üdvözlő üzenetet ad a játékosoknak:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Üdvözlünk a szerveren, %player%!</code>",
+        usage_player_desc: "A játékosok a <code>/redeem welcomecode</code> paranccsal válthatják be, megkapva egy gyémántot és egy üzenetet (legfeljebb 10 használat, 1 IP-nként).",
+        support_title: "Támogatás",
+        support_desc: "Találtál hibát vagy segítségre van szükséged? Csatlakozz Discord szerverünkhöz gyors és kiváló támogatásért: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Csatlakozz a Discordhoz</a>.",
+        support_note: "Kérjük, ne jelents hibákat a BuiltByBit értékelésekben. Használd a Discord szervert a hibajelentésekhez és támogatási kérésekhez.",
+        tos_title: "Szolgáltatási feltételek",
+        tos_list: [
+          "Nem adhatod el ezt a bővítményt.",
+          "Nem fordíthatod vissza.",
+          "Nem használhatod fel a bővítmény kódjának részeit.",
+          "Nem állíthatod, hogy ez a bővítmény a tiéd."
+        ],
+        reviews_title: "Értékelések",
+        reviews_desc: "Közösségünk imádja a MyRedeemPlus-t! Átlagosan <strong>5/5</strong> értékeléssel 5 értékelés alapján a BuiltByBit-en, íme, mit mondanak a felhasználók:",
+        reviews_feedback: "Kipróbáltad a MyRedeemPlus-t? Oszd meg visszajelzésedet a <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> oldalon, és segíts közösségünknek növekedni!",
+        footer_copyright: "&copy; 2025 OkiTask. Minden jog fenntartva.",
+        footer_follow: "Kövesd engem",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Csatlakozz a Discordhoz"
+      },
+      tr: {
+        title: "MyRedeemPlus Dokümantasyonu",
+        header: "OkiTask Eklentileri",
+        nav_home: "Ana Sayfa",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Minecraft sunucunuzda oyuncuları ödüllendirmek için kullanılabilir kodlar oluşturun ve yönetin. Kod kullanım takibi, son kullanma tarihleri ve özel komutlar içerir. Minecraft 1.7'den 1.21'e kadar olan sürümleri destekler.",
+        purchase_desc: "Eklentiyi BuiltByBit üzerinden satın al: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Puan:</strong> <span>5/5 (5 değerlendirme)</span>",
+        downloads: "<strong>İndirmeler:</strong> <span>11</span>",
+        updated: "<strong>Güncellendi:</strong> <span>3 Ağustos 2025</span>",
+        installation_title: "Kurulum",
+        installation_steps: [
+          "En son sürümü <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> üzerinden indir.",
+          "<code>MyRedeemPlus.jar</code> dosyasını sunucunun <code>plugins</code> klasörüne yerleştir.",
+          "Discord'a katıl ve <code>lisans</code> talebinde bulun.",
+          "Eklentiyi yüklemek için sunucuyu yeniden başlat.",
+          "Eklentiyi <code>plugins/MyRedeemPlus/config.yml</code> içinde yapılandır."
+        ],
+        commands_title: "Komutlar",
+        commands_user_desc: "Kullanıcı Komutları (İzin: <code>myredeemplus.use</code>, Takma adlar: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Ödüller almak için bir kodu kullan."
+        ],
+        commands_staff_desc: "Personel Komutları (İzin: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Eklenti yapılandırmasını yeniden yükler.",
+          "<code>/myredeem help</code> - Tüm komutları listeler.",
+          "<code>/myredeem gui</code> - Mevcut tüm kodları gösteren bir GUI açar.",
+          "<code>/myredeem info</code> - Belirli bir kod hakkında bilgi içeren bir GUI açar.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Bir oyuncunun kullandığı kodları kontrol eder.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Bir oyuncunun kullandığı kodu sıfırlar.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Rastgele bir kod oluşturur.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Belirli bir kod oluşturur.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Bir kodu siler.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Bir koda komut ekler.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Bir koddan komut siler.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Bir kod için kullanım sayısını ayarlar."
+        ],
+        placeholders_title: "Yer Tutucular",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Oyuncunun kullandığı toplam kod sayısını gösterir.",
+          "<code>%myredeemplus_total_codes%</code> - Mevcut kodların toplam sayısını gösterir.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Bir kodun durumunu gösterir (örneğin, kullanıldı, mevcut, vb.)."
+        ],
+        config_title: "Yapılandırma",
+        config_desc: "<code>plugins/MyRedeemPlus/config.yml</code> konumundaki yapılandırma dosyasını düzenleyin. Aşağıda bir yapılandırma örneği verilmiştir:",
+        config_codes_desc: "<code>plugins/MyRedeemPlus/codes.yml</code> konumundaki kod dosyasını düzenleyin. Aşağıda örnek kodlar verilmiştir:",
+        config_lang_desc: "Birden fazla dili destekler: İngilizce, İtalyanca, Romence, Almanca, Vietnamca, İspanyolca, Fransızca, Macarca, Türkçe, Portekizce, Çekçe, Lehçe, Rusça, Ukraynaca ve özel diller.",
+        usage_title: "Kullanım Örneği",
+        usage_desc: "Oyunculara bir elmas ve hoş geldin mesajı veren bir kod oluşturmak için:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Sunucuya hoş geldin, %player%!</code>",
+        usage_player_desc: "Oyuncular <code>/redeem welcomecode</code> kullanarak kodu kullanabilir, bir elmas ve bir mesaj alır (maksimum 10 kullanım, IP başına 1).",
+        support_title: "Destek",
+        support_desc: "Bir hata mı buldunuz veya yardıma mı ihtiyacınız var? Hızlı ve mükemmel destek için Discord sunucumuza katılın: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Discord'a Katıl</a>.",
+        support_note: "Lütfen BuiltByBit incelemelerinde hata bildirmeyin. Hata bildirimleri ve destek talepleri için Discord sunucusunu kullanın.",
+        tos_title: "Hizmet Şartları",
+        tos_list: [
+          "Bu eklentiyi satamazsınız.",
+          "Eklentiyi tersine derleyemezsiniz.",
+          "Eklenti kodunun parçalarını kullanamazsınız.",
+          "Bu eklentiyi kendinize aitmiş gibi iddia edemezsiniz."
+        ],
+        reviews_title: "İncelemeler",
+        reviews_desc: "Topluluğumuz MyRedeemPlus'ı seviyor! BuiltByBit üzerinde 5 incelemeden ortalama <strong>5/5</strong> puanla, kullanıcıların söyledikleri şunlar:",
+        reviews_feedback: "MyRedeemPlus'ı denediniz mi? Geri bildiriminizi <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> üzerinde paylaşın ve topluluğumuzun büyümesine yardımcı olun!",
+        footer_copyright: "&copy; 2025 OkiTask. Tüm hakları saklıdır.",
+        footer_follow: "Beni takip et",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Discord'a Katıl"
+      },
+      pt: {
+        title: "Documentação do MyRedeemPlus",
+        header: "Plugins OkiTask",
+        nav_home: "Início",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Crie e gerencie códigos resgatáveis para recompensar jogadores no seu servidor Minecraft. Inclui rastreamento de uso de códigos, datas de expiração e comandos personalizados. Suporta versões do Minecraft de 1.7 a 1.21.",
+        purchase_desc: "Compre o plugin no BuiltByBit: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Avaliação:</strong> <span>5/5 (5 avaliações)</span>",
+        downloads: "<strong>Downloads:</strong> <span>11</span>",
+        updated: "<strong>Atualizado:</strong> <span>3 de Agosto de 2025</span>",
+        installation_title: "Instalação",
+        installation_steps: [
+          "Baixe a versão mais recente do <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a>.",
+          "Coloque o arquivo <code>MyRedeemPlus.jar</code> na pasta <code>plugins</code> do seu servidor.",
+          "Junte-se ao Discord e solicite a <code>licença</code>.",
+          "Reinicie o servidor para carregar o plugin.",
+          "Configure o plugin em <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Comandos",
+        commands_user_desc: "Comandos de Usuário (Permissão: <code>myredeemplus.use</code>, Aliases: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Resgatar um código para receber recompensas."
+        ],
+        commands_staff_desc: "Comandos de Staff (Permissão: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Recarrega a configuração do plugin.",
+          "<code>/myredeem help</code> - Lista todos os comandos.",
+          "<code>/myredeem gui</code> - Abre uma GUI mostrando todos os códigos existentes.",
+          "<code>/myredeem info</code> - Abre uma GUI com informações sobre um código específico.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Verifica os códigos resgatados por um jogador.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Reseta um código resgatado por um jogador.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Cria um código aleatório.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Cria um código específico.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Deleta um código.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Adiciona um comando a um código.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Deleta um comando de um código.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Define o número de usos para um código."
+        ],
+        placeholders_title: "Marcadores",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Mostra o total de códigos resgatados pelo jogador.",
+          "<code>%myredeemplus_total_codes%</code> - Mostra o número total de códigos existentes.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Mostra o status de um código (ex.: resgatado, existe, etc.)."
+        ],
+        config_title: "Configuração",
+        config_desc: "Edite o arquivo de configuração localizado em <code>plugins/MyRedeemPlus/config.yml</code>. Abaixo está um exemplo de configuração:",
+        config_codes_desc: "Edite o arquivo de códigos localizado em <code>plugins/MyRedeemPlus/codes.yml</code>. Abaixo estão exemplos de códigos:",
+        config_lang_desc: "Suporta vários idiomas: Inglês, Italiano, Romeno, Alemão, Vietnamita, Espanhol, Francês, Húngaro, Turco, Português, Tcheco, Polonês, Russo, Ucraniano e idiomas personalizados.",
+        usage_title: "Exemplo de Uso",
+        usage_desc: "Para criar um código que dá aos jogadores um diamante e uma mensagem de boas-vindas:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Bem-vindo ao servidor, %player%!</code>",
+        usage_player_desc: "Os jogadores podem resgatá-lo usando <code>/redeem welcomecode</code>, recebendo um diamante e uma mensagem (até 10 usos, 1 por IP).",
+        support_title: "Suporte",
+        support_desc: "Encontrou um bug ou precisa de ajuda? Junte-se ao nosso servidor Discord para suporte rápido e excelente: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Junte-se ao Discord</a>.",
+        support_note: "Por favor, não relate bugs nas avaliações do BuiltByBit. Use o servidor Discord para relatórios de bugs e solicitações de suporte.",
+        tos_title: "Termos de Serviço",
+        tos_list: [
+          "Você não pode vender este plugin.",
+          "Você não pode descompilá-lo.",
+          "Você não pode usar partes do código do plugin.",
+          "Você não pode reivindicar este plugin como seu."
+        ],
+        reviews_title: "Avaliações",
+        reviews_desc: "Nossa comunidade ama o MyRedeemPlus! Com uma avaliação média de <strong>5/5</strong> de 5 avaliações no BuiltByBit, aqui está o que os usuários estão dizendo:",
+        reviews_feedback: "Você experimentou o MyRedeemPlus? Compartilhe seu feedback no <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> e ajude nossa comunidade a crescer!",
+        footer_copyright: "&copy; 2025 OkiTask. Todos os direitos reservados.",
+        footer_follow: "Siga-me no",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Junte-se ao Discord"
+      },
+      cs: {
+        title: "Dokumentace MyRedeemPlus",
+        header: "Pluginy OkiTask",
+        nav_home: "Domů",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Vytvářejte a spravujte vyměnitelné kódy pro odměňování hráčů na vašem Minecraft serveru. Obsahuje sledování použití kódů, data vypršení platnosti a vlastní příkazy. Podporuje verze Minecraftu od 1.7 do 1.21.",
+        purchase_desc: "Zakupte plugin na BuiltByBit: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Hodnocení:</strong> <span>5/5 (5 hodnocení)</span>",
+        downloads: "<strong>Stažení:</strong> <span>11</span>",
+        updated: "<strong>Aktualizováno:</strong> <span>3. srpna 2025</span>",
+        installation_title: "Instalace",
+        installation_steps: [
+          "Stáhněte nejnovější verzi z <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a>.",
+          "Umístěte soubor <code>MyRedeemPlus.jar</code> do složky <code>plugins</code> vašeho serveru.",
+          "Připojte se na Discord a požádejte o <code>licenci</code>.",
+          "Restartujte server, aby se plugin načetl.",
+          "Nakonfigurujte plugin v <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Příkazy",
+        commands_user_desc: "Uživatelské příkazy (Oprávnění: <code>myredeemplus.use</code>, Alias: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Vyměňte kód za odměny."
+        ],
+        commands_staff_desc: "Příkazy pro personál (Oprávnění: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Znovu načte konfiguraci pluginu.",
+          "<code>/myredeem help</code> - Vypíše všechny příkazy.",
+          "<code>/myredeem gui</code> - Otevře GUI zobrazující všechny existující kódy.",
+          "<code>/myredeem info</code> - Otevře GUI s informacemi o konkrétním kódu.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Zkontroluje vyměněné kódy hráče.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Resetuje vyměněný kód hráče.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Vytvoří náhodný kód.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Vytvoří konkrétní kód.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Smaže kód.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Přidá příkaz ke kódu.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Smaže příkaz z kódu.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Nastaví počet použití pro kód."
+        ],
+        placeholders_title: "Zástupné symboly",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Zobrazí celkový počet vyměněných kódů hráčem.",
+          "<code>%myredeemplus_total_codes%</code> - Zobrazí celkový počet existujících kódů.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Zobrazí stav kódu (např. vyměněný, existuje, atd.)."
+        ],
+        config_title: "Konfigurace",
+        config_desc: "Upravte konfigurační soubor umístěný v <code>plugins/MyRedeemPlus/config.yml</code>. Níže je příklad konfigurace:",
+        config_codes_desc: "Upravte soubor kódů umístěný v <code>plugins/MyRedeemPlus/codes.yml</code>. Níže jsou příklady kódů:",
+        config_lang_desc: "Podporuje více jazyků: Angličtina, Italština, Rumunština, Němčina, Vietnamština, Španělština, Francouzština, Maďarština, Turečtina, Portugalština, Čeština, Polština, Ruština, Ukrajinština a vlastní jazyky.",
+        usage_title: "Příklad použití",
+        usage_desc: "Pro vytvoření kódu, který dá hráčům diamant a uvítací zprávu:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Vítej na serveru, %player%!</code>",
+        usage_player_desc: "Hráči mohou kód vyměnit pomocí <code>/redeem welcomecode</code>, obdrží diamant a zprávu (až 10 použití, 1 na IP).",
+        support_title: "Podpora",
+        support_desc: "Našli jste chybu nebo potřebujete pomoc? Připojte se k našemu Discord serveru pro rychlou a výbornou podporu: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Připojit se k Discordu</a>.",
+        support_note: "Prosím, nehlaste chyby v recenzích na BuiltByBit. Použijte Discord server pro hlášení chyb a žádosti o podporu.",
+        tos_title: "Podmínky služby",
+        tos_list: [
+          "Tento plugin nemůžete prodávat.",
+          "Nemůžete ho dekompilovat.",
+          "Nemůžete použít části kódu pluginu.",
+          "Nemůžete tvrdit, že tento plugin je váš."
+        ],
+        reviews_title: "Recenze",
+        reviews_desc: "Naše komunita miluje MyRedeemPlus! S průměrným hodnocením <strong>5/5</strong> z 5 recenzí na BuiltByBit, tady je, co říkají uživatelé:",
+        reviews_feedback: "Vyzkoušeli jste MyRedeemPlus? Sdílejte svůj názor na <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> a pomozte naší komunitě růst!",
+        footer_copyright: "&copy; 2025 OkiTask. Všechna práva vyhrazena.",
+        footer_follow: "Sledujte mě na",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Připojit se k Discordu"
+      },
+      pl: {
+        title: "Dokumentacja MyRedeemPlus",
+        header: "Wtyczki OkiTask",
+        nav_home: "Strona główna",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Twórz i zarządzaj kodami wymienialnymi, aby nagradzać graczy na swoim serwerze Minecraft. Zawiera śledzenie użycia kodów, daty ważności i niestandardowe komendy. Obsługuje wersje Minecraft od 1.7 do 1.21.",
+        purchase_desc: "Kup wtyczkę na BuiltByBit: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Ocena:</strong> <span>5/5 (5 ocen)</span>",
+        downloads: "<strong>Pobrania:</strong> <span>11</span>",
+        updated: "<strong>Aktualizacja:</strong> <span>3 sierpnia 2025</span>",
+        installation_title: "Instalacja",
+        installation_steps: [
+          "Pobierz najnowszą wersję z <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a>.",
+          "Umieść plik <code>MyRedeemPlus.jar</code> w folderze <code>plugins</code> swojego serwera.",
+          "Dołącz do Discorda i poproś o <code>licencję</code>.",
+          "Uruchom ponownie serwer, aby załadować wtyczkę.",
+          "Skonfiguruj wtyczkę w pliku <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Komendy",
+        commands_user_desc: "Komendy użytkownika (Uprawnienie: <code>myredeemplus.use</code>, Aliasy: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Wykorzystaj kod, aby otrzymać nagrody."
+        ],
+        commands_staff_desc: "Komendy dla personelu (Uprawnienie: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Przeładowuje konfigurację wtyczki.",
+          "<code>/myredeem help</code> - Wyświetla wszystkie komendy.",
+          "<code>/myredeem gui</code> - Otwiera GUI pokazujące wszystkie istniejące kody.",
+          "<code>/myredeem info</code> - Otwiera GUI z informacjami o konkretnym kodzie.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Sprawdza wykorzystane kody gracza.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Resetuje wykorzystany kod gracza.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Tworzy losowy kod.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Tworzy konkretny kod.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Usuwa kod.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Dodaje komendę do kodu.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Usuwa komendę z kodu.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Ustawia liczbę użyć dla kodu."
+        ],
+        placeholders_title: "Zmienne",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Pokazuje łączną liczbę wykorzystanych kodów przez gracza.",
+          "<code>%myredeemplus_total_codes%</code> - Pokazuje łączną liczbę istniejących kodów.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Pokazuje status kodu (np. wykorzystany, istnieje, itp.)."
+        ],
+        config_title: "Konfiguracja",
+        config_desc: "Edytuj plik konfiguracyjny znajdujący się w <code>plugins/MyRedeemPlus/config.yml</code>. Poniżej znajduje się przykład konfiguracji:",
+        config_codes_desc: "Edytuj plik kodów znajdujący się w <code>plugins/MyRedeemPlus/codes.yml</code>. Poniżej znajdują się przykłady kodów:",
+        config_lang_desc: "Obsługuje wiele języków: Angielski, Włoski, Rumuński, Niemiecki, Wietnamski, Hiszpański, Francuski, Węgierski, Turecki, Portugalski, Czeski, Polski, Rosyjski, Ukraiński i języki niestandardowe.",
+        usage_title: "Przykład użycia",
+        usage_desc: "Aby stworzyć kod, który daje graczom diament i wiadomość powitalną:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Witaj na serwerze, %player%!</code>",
+        usage_player_desc: "Gracze mogą go wykorzystać, używając <code>/redeem welcomecode</code>, otrzymując diament i wiadomość (do 10 użyć, 1 na IP).",
+        support_title: "Wsparcie",
+        support_desc: "Znalazłeś błąd lub potrzebujesz pomocy? Dołącz do naszego serwera Discord, aby uzyskać szybkie i doskonałe wsparcie: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Dołącz do Discorda</a>.",
+        support_note: "Proszę, nie zgłaszaj błędów w recenzjach na BuiltByBit. Użyj serwera Discord do zgłaszania błędów i próśb o wsparcie.",
+        tos_title: "Warunki usługi",
+        tos_list: [
+          "Nie możesz sprzedawać tej wtyczki.",
+          "Nie możesz jej dekompilować.",
+          "Nie możesz używać części kodu wtyczki.",
+          "Nie możesz twierdzić, że ta wtyczka jest twoja."
+        ],
+        reviews_title: "Recenzje",
+        reviews_desc: "Nasza społeczność uwielbia MyRedeemPlus! Z średnią oceną <strong>5/5</strong> z 5 recenzji na BuiltByBit, oto co mówią użytkownicy:",
+        reviews_feedback: "Wypróbowałeś MyRedeemPlus? Podziel się swoją opinią na <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> i pomóż naszej społeczności się rozwijać!",
+        footer_copyright: "&copy; 2025 OkiTask. Wszelkie prawa zastrzeżone.",
+        footer_follow: "Śledź mnie na",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Dołącz do Discorda"
+      },
+      ru: {
+        title: "Документация MyRedeemPlus",
+        header: "Плагины OkiTask",
+        nav_home: "Главная",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Создавайте и управляйте кодами для вознаграждения игроков на вашем сервере Minecraft. Включает отслеживание использования кодов, даты истечения срока действия и пользовательские команды. Поддерживает версии Minecraft от 1.7 до 1.21.",
+        purchase_desc: "Купите плагин на BuiltByBit: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Рейтинг:</strong> <span>5/5 (5 оценок)</span>",
+        downloads: "<strong>Загрузки:</strong> <span>11</span>",
+        updated: "<strong>Обновлено:</strong> <span>3 августа 2025</span>",
+        installation_title: "Установка",
+        installation_steps: [
+          "Скачайте последнюю версию с <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a>.",
+          "Поместите файл <code>MyRedeemPlus.jar</code> в папку <code>plugins</code> вашего сервера.",
+          "Присоединитесь к Discord и запросите <code>лицензию</code>.",
+          "Перезапустите сервер, чтобы загрузить плагин.",
+          "Настройте плагин в <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Команды",
+        commands_user_desc: "Команды для пользователей (Право: <code>myredeemplus.use</code>, Алиасы: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Активировать код для получения наград."
+        ],
+        commands_staff_desc: "Команды для персонала (Право: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Перезагружает конфигурацию плагина.",
+          "<code>/myredeem help</code> - Показывает все команды.",
+          "<code>/myredeem gui</code> - Открывает GUI с отображением всех существующих кодов.",
+          "<code>/myredeem info</code> - Открывает GUI с информацией о конкретном коде.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Проверяет активированные коды игрока.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Сбрасывает активированный код игрока.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Создает случайный код.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Создает конкретный код.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Удаляет код.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Добавляет команду к коду.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Удаляет команду из кода.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Устанавливает количество использований для кода."
+        ],
+        placeholders_title: "Переменные",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Показывает общее количество активированных кодов игроком.",
+          "<code>%myredeemplus_total_codes%</code> - Показывает общее количество существующих кодов.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Показывает статус кода (например, активирован, существует и т.д.)."
+        ],
+        config_title: "Конфигурация",
+        config_desc: "Отредактируйте файл конфигурации, расположенный в <code>plugins/MyRedeemPlus/config.yml</code>. Ниже приведен пример конфигурации:",
+        config_codes_desc: "Отредактируйте файл кодов, расположенный в <code>plugins/MyRedeemPlus/codes.yml</code>. Ниже приведены примеры кодов:",
+        config_lang_desc: "Поддерживает несколько языков: Английский, Итальянский, Румынский, Немецкий, Вьетнамский, Испанский, Французский, Венгерский, Турецкий, Португальский, Чешский, Польский, Русский, Украинский и пользовательские языки.",
+        usage_title: "Пример использования",
+        usage_desc: "Для создания кода, который дает игрокам алмаз и приветственное сообщение:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Добро пожаловать на сервер, %player%!</code>",
+        usage_player_desc: "Игроки могут активировать код с помощью <code>/redeem welcomecode</code>, получая алмаз и сообщение (до 10 использований, 1 на IP).",
+        support_title: "Поддержка",
+        support_desc: "Нашли ошибку или нужна помощь? Присоединяйтесь к нашему серверу Discord для быстрой и качественной поддержки: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Присоединиться к Discord</a>.",
+        support_note: "Пожалуйста, не сообщайте об ошибках в отзывах на BuiltByBit. Используйте сервер Discord для сообщений об ошибках и запросов на поддержку.",
+        tos_title: "Условия обслуживания",
+        tos_list: [
+          "Вы не можете продавать этот плагин.",
+          "Вы не можете его декомпилировать.",
+          "Вы не можете использовать части кода плагина.",
+          "Вы не можете присваивать этот плагин себе."
+        ],
+        reviews_title: "Отзывы",
+        reviews_desc: "Наше сообщество любит MyRedeemPlus! Со средней оценкой <strong>5/5</strong> из 5 отзывов на BuiltByBit, вот что говорят пользователи:",
+        reviews_feedback: "Пробовали MyRedeemPlus? Поделитесь своим отзывом на <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> и помогите нашему сообществу расти!",
+        footer_copyright: "&copy; 2025 OkiTask. Все права защищены.",
+        footer_follow: "Следите за мной на",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Присоединиться к Discord"
+      },
+      uk: {
+        title: "Документація MyRedeemPlus",
+        header: "Плагіни OkiTask",
+        nav_home: "Головна",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyRedeemPlus [1.7 - 1.21] v1.9.1",
+        section_desc: "Створюйте та керуйте кодами для нагородження гравців на вашому сервері Minecraft. Включає відстеження використання кодів, дати закінчення терміну дії та власні команди. Підтримує версії Minecraft від 1.7 до 1.21.",
+        purchase_desc: "Придбайте плагін на BuiltByBit: <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>MyRedeemPlus</a> ($5.00).",
+        rating: "<strong>Рейтинг:</strong> <span>5/5 (5 оцінок)</span>",
+        downloads: "<strong>Завантаження:</strong> <span>11</span>",
+        updated: "<strong>Оновлено:</strong> <span>3 серпня 2025</span>",
+        installation_title: "Встановлення",
+        installation_steps: [
+          "Завантажте останню версію з <a href='https://builtbybit.com/resources/myredeemplus.50811/' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a>.",
+          "Помістіть файл <code>MyRedeemPlus.jar</code> у папку <code>plugins</code> вашого сервера.",
+          "Приєднайтесь до Discord і запитайте <code>ліцензію</code>.",
+          "Перезапустіть сервер, щоб завантажити плагін.",
+          "Налаштуйте плагін у <code>plugins/MyRedeemPlus/config.yml</code>."
+        ],
+        commands_title: "Команди",
+        commands_user_desc: "Команди для користувачів (Дозвіл: <code>myredeemplus.use</code>, Аліаси: <code>/gift</code>, <code>/promo</code>, <code>/prize</code>, <code>/coupon</code>)",
+        commands_user_list: [
+          "<code>/redeem &lt;code&gt;</code> - Активувати код для отримання нагород."
+        ],
+        commands_staff_desc: "Команди для персоналу (Дозвіл: <code>myredeemplus.staff</code>)",
+        commands_staff_list: [
+          "<code>/myredeem reload</code> - Перезавантажує конфігурацію плагіна.",
+          "<code>/myredeem help</code> - Показує всі команди.",
+          "<code>/myredeem gui</code> - Відкриває GUI з відображенням усіх існуючих кодів.",
+          "<code>/myredeem info</code> - Відкриває GUI з інформацією про конкретний код.",
+          "<code>/myredeem checkcodes &lt;player&gt;</code> - Перевіряє активовані коди гравця.",
+          "<code>/myredeem reset &lt;player&gt; &lt;code&gt;</code> - Скидає активований код гравця.",
+          "<code>/myredeem createrandomcode &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Створює випадковий код.",
+          "<code>/myredeem createcode &lt;code&gt; &lt;uses&gt; &lt;player_limit_per_ip&gt; &lt;cmd&gt; &lt;expiration&gt;</code> - Створює конкретний код.",
+          "<code>/myredeem deletecode &lt;code&gt;</code> - Видаляє код.",
+          "<code>/myredeem addcmd &lt;code&gt; &lt;cmd&gt;</code> - Додає команду до коду.",
+          "<code>/myredeem delcmd &lt;code&gt; &lt;index&gt;</code> - Видаляє команду з коду.",
+          "<code>/myredeem setuses &lt;uses&gt; &lt;code&gt;</code> - Встановлює кількість використань для коду."
+        ],
+        placeholders_title: "Заповнювачі",
+        placeholders_list: [
+          "<code>%myredeemplus_redeemed_codes%</code> - Показує загальну кількість активованих кодів гравцем.",
+          "<code>%myredeemplus_total_codes%</code> - Показує загальну кількість існуючих кодів.",
+          "<code>%myredeemplus_redeemable_&lt;code&gt;%</code> - Показує статус коду (наприклад, активовано, існує тощо)."
+        ],
+        config_title: "Конфігурація",
+        config_desc: "Відредагуйте файл конфігурації, розташований у <code>plugins/MyRedeemPlus/config.yml</code>. Нижче наведено приклад конфігурації:",
+        config_codes_desc: "Відредагуйте файл кодів, розташований у <code>plugins/MyRedeemPlus/codes.yml</code>. Нижче наведено приклади кодів:",
+        config_lang_desc: "Підтримує кілька мов: Англійська, Італійська, Румунська, Німецька, В’єтнамська, Іспанська, Французька, Угорська, Турецька, Португальська, Чеська, Польська, Російська, Українська та власні мови.",
+        usage_title: "Приклад використання",
+        usage_desc: "Для створення коду, який дає гравцям діамант і привітальне повідомлення:",
+        usage_example: "<code>/myredeem createcode welcomecode 10 1 give %player% diamond 1 10d</code><br><code>/myredeem addcmd welcomecode say Ласкаво просимо на сервер, %player%!</code>",
+        usage_player_desc: "Гравці можуть активувати код за допомогою <code>/redeem welcomecode</code>, отримуючи діамант і повідомлення (до 10 використань, 1 на IP).",
+        support_title: "Підтримка",
+        support_desc: "Знайшли помилку або потрібна допомога? Приєднайтесь до нашого сервера Discord для швидкої та якісної підтримки: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Приєднатися до Discord</a>.",
+        support_note: "Будь ласка, не повідомляйте про помилки в оглядах на BuiltByBit. Використовуйте сервер Discord для повідомлень про помилки та запитів на підтримку.",
+        tos_title: "Умови обслуговування",
+        tos_list: [
+          "Ви не можете продавати цей плагін.",
+          "Ви не можете його декомпілювати.",
+          "Ви не можете використовувати частини коду плагіна.",
+          "Ви не можете привласнювати цей плагін собі."
+        ],
+        reviews_title: "Відгуки",
+        reviews_desc: "Наша спільнота любить MyRedeemPlus! З середньою оцінкою <strong>5/5</strong> з 5 відгуків на BuiltByBit, ось що кажуть користувачі:",
+        reviews_feedback: "Спробували MyRedeemPlus? Поділіться своїм відгуком на <a href='https://builtbybit.com/resources/myredeemplus.50811/reviews' target='_blank' class='text-blue-400 hover:underline'>BuiltByBit</a> та допоможіть нашій спільноті зростати!",
+        footer_copyright: "&copy; 2025 OkiTask. Усі права захищено.",
+        footer_follow: "Слідкуйте за мною на",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Приєднатися до Discord"
+      }
+    };
+    
+    const languageOptions = [
+      { code: 'en', name: 'English', flag: 'flags/gb.png' },
+      { code: 'it', name: 'Italiano', flag: 'flags/it.png' },
+      { code: 'ro', name: 'Română', flag: 'flags/ro.png' },
+      { code: 'de', name: 'Deutsch', flag: 'flags/de.png' },
+      { code: 'vi', name: 'Tiếng Việt', flag: 'flags/vn.png' },
+      { code: 'es', name: 'Español', flag: 'flags/es.png' },
+      { code: 'fr', name: 'Français', flag: 'flags/fr.png' },
+      { code: 'hu', name: 'Magyar', flag: 'flags/hu.png' },
+      { code: 'tr', name: 'Türkçe', flag: 'flags/tr.png' },
+      { code: 'pt', name: 'Português', flag: 'flags/pt.png' },
+      { code: 'cs', name: 'Čeština', flag: 'flags/cz.png' },
+      { code: 'pl', name: 'Polski', flag: 'flags/pl.png' },
+      { code: 'ru', name: 'Русский', flag: 'flags/ru.png' },
+      { code: 'uk', name: 'Українська', flag: 'flags/ua.png' }
+    ];
+
+    let currentLanguage = 'en';
+
+    function updateContent(language) {
+      if (!translations[language]) {
+        console.warn(`Language "${language}" not found, falling back to English.`);
+        language = 'en';
+      }
+
+      const t = translations[language];
+
+      const updateElement = (selector, content) => {
+        const element = document.querySelector(selector);
+        if (element) {
+          element.innerHTML = content;
+        } else {
+          console.warn(`Element with selector "${selector}" not found.`);
+        }
+      };
+
+      document.title = t.title || "MyRedeemPlus Documentation";
+      updateElement('h1', t.header);
+      updateElement('#nav-home', t.nav_home);
+      updateElement('#nav-myportalscommands', t.nav_myportalscommands);
+      updateElement('#nav-myredeemplus', t.nav_myredeemplus);
+      updateElement('#section-title', t.section_title);
+      updateElement('#section-desc', t.section_desc);
+      updateElement('#purchase-desc', t.purchase_desc);
+      updateElement('#rating', t.rating);
+      updateElement('#downloads', t.downloads);
+      updateElement('#updated', t.updated);
+      updateElement('#installation-title', t.installation_title);
+
+      const installationList = document.querySelector('#installation-steps');
+      if (installationList) {
+        installationList.innerHTML = t.installation_steps.map(step => `<li>${step}</li>`).join('');
+      }
+
+      updateElement('#commands-title', t.commands_title);
+      updateElement('#commands-user-desc', t.commands_user_desc);
+
+      const commandsUserList = document.querySelector('#commands-user-list');
+      if (commandsUserList) {
+        commandsUserList.innerHTML = t.commands_user_list.map(command => `<li>${command}</li>`).join('');
+      }
+
+      updateElement('#commands-staff-desc', t.commands_staff_desc);
+
+      const commandsStaffList = document.querySelector('#commands-staff-list');
+      if (commandsStaffList) {
+        commandsStaffList.innerHTML = t.commands_staff_list.map(command => `<li>${command}</li>`).join('');
+      }
+
+      updateElement('#placeholders-title', t.placeholders_title);
+
+      const placeholdersList = document.querySelector('#placeholders-list');
+      if (placeholdersList) {
+        placeholdersList.innerHTML = t.placeholders_list.map(item => `<li>${item}</li>`).join('');
+      }
+
+      updateElement('#config-title', t.config_title);
+      updateElement('#config-desc', t.config_desc);
+      updateElement('#config-codes-desc', t.config_codes_desc);
+      updateElement('#config-lang-desc', t.config_lang_desc);
+      updateElement('#usage-title', t.usage_title);
+      updateElement('#usage-desc', t.usage_desc);
+      updateElement('#usage-example', t.usage_example);
+      updateElement('#usage-player-desc', t.usage_player_desc);
+      updateElement('#support-title', t.support_title);
+      updateElement('#support-desc', t.support_desc);
+      updateElement('#support-note', t.support_note);
+      updateElement('#tos-title', t.tos_title);
+
+      const tosList = document.querySelector('#tos-list');
+      if (tosList) {
+        tosList.innerHTML = t.tos_list.map(item => `<li>${item}</li>`).join('');
+      }
+
+      updateElement('#reviews-title', t.reviews_title);
+      updateElement('#reviews-desc', t.reviews_desc);
+      updateElement('#reviews-feedback', t.reviews_feedback);
+      updateElement('#footer-copyright', t.footer_copyright);
+      updateElement('#footer-follow', t.footer_follow);
+      updateElement('#footer-spigotmc', t.footer_spigotmc);
+      updateElement('#footer-builtbybit', t.footer_builtbybit);
+      updateElement('#footer-discord', t.footer_discord);
+
+      const languageSelector = document.querySelector('.language-selector');
+      if (languageSelector) {
+        const selectedLang = languageOptions.find(opt => opt.code === language) || languageOptions[0];
+        const flagImg = languageSelector.querySelector('img');
+        const languageSpan = languageSelector.querySelector('span');
+        if (flagImg && languageSpan) {
+          flagImg.src = selectedLang.flag;
+          flagImg.alt = `${selectedLang.name} flag`;
+          languageSpan.textContent = selectedLang.name;
+        } else {
+          console.warn('Flag image or language span not found in language selector.');
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateContent(currentLanguage);
+
+      const languageSelector = document.querySelector('.language-selector');
+      const languageDropdown = document.querySelector('.language-dropdown');
+      const hamburger = document.querySelector('.hamburger');
+      const navLinks = document.querySelector('.nav-links');
+
+      if (!languageSelector || !languageDropdown || !hamburger || !navLinks) {
+        console.error('One or more critical DOM elements are missing.');
+        return;
+      }
+
+      languageOptions.forEach(option => {
+        const div = document.createElement('div');
+        div.className = 'language-option';
+        div.innerHTML = `<img src="${option.flag}" alt="${option.name} flag"> ${option.name}`;
+        div.dataset.lang = option.code;
+        languageDropdown.appendChild(div);
+      });
+
+      languageSelector.addEventListener('click', () => {
+        languageDropdown.classList.toggle('active');
+      });
+
+      languageDropdown.addEventListener('click', (e) => {
+        const langOption = e.target.closest('.language-option');
+        if (langOption) {
+          const newLanguage = langOption.dataset.lang;
+          if (translations[newLanguage]) {
+            currentLanguage = newLanguage;
+            updateContent(currentLanguage);
+          } else {
+            console.warn(`Selected language "${newLanguage}" is not available.`);
+          }
+          languageDropdown.classList.remove('active');
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!languageSelector.contains(e.target) && !languageDropdown.contains(e.target)) {
+          languageDropdown.classList.remove('active');
+        }
+      });
+
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+      });
+    });
+  </script>
+
+  <nav class="navbar py-4 px-6 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-white"></h1>
+    <div class="flex items-center justify-center flex-grow">
+      <div class="language-selector-container">
+        <div class="language-selector">
+          <img src="flags/gb.png" alt="Language flag" class="w-6 h-6">
+          <span>English</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </div>
+        <div class="language-dropdown"></div>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="nav-links flex gap-4 sm:flex-row sm:static sm:bg-transparent sm:p-0">
+        <a id="nav-home" href="index.html" class="text-gray-300 hover:text-white transition"></a>
+        <a id="nav-myportalscommands" href="myportalscommands.html" class="text-gray-300 hover:text-white transition"></a>
+        <a id="nav-myredeemplus" href="myredeemplus.html" class="text-gray-300 hover:text-white transition"></a>
+      </div>
+      <div class="hamburger sm:hidden">☰</div>
+    </div>
+  </nav>
+
+  <main class="container mx-auto py-20 px-6 max-w-4xl">
+    <section id="myredeemplus" class="mb-12">
+      <h2 id="section-title" class="text-3xl font-bold mb-4"></h2>
+      <p id="section-desc" class="text-lg mb-4"></p>
+      <p id="purchase-desc" class="text-gray-300 mb-4"></p>
+      <div class="flex flex-wrap gap-4 mb-4">
+        <p id="rating" class="mb-2"></p>
+        <p id="downloads" class="mb-2"></p>
+        <p id="updated" class="mb-2"></p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h3 id="installation-title" class="text-xl font-semibold mb-2"></h3>
+      <ol id="installation-steps" class="list-decimal list-inside space-y-2 text-gray-300"></ol>
+    </section>
+
+    <section class="mb-12">
+      <h3 id="commands-title" class="text-xl font-semibold mb-2"></h3>
+      <p id="commands-user-desc" class="text-gray-300 mb-4"></p>
+      <ul id="commands-user-list" class="list-disc list-inside text-gray-300"></ul>
+      <p id="commands-staff-desc" class="text-gray-300 mt-4"></p>
+      <ul id="commands-staff-list" class="list-disc list-inside text-gray-300"></ul>
+    </section>
+
+    <section class="mb-12">
+      <h3 id="placeholders-title" class="text-xl font-semibold mb-2"></h3>
+      <ul id="placeholders-list" class="list-disc list-inside text-gray-300"></ul>
+    </section>
+
+    <section class="mb-12">
+      <h3 id="config-title" class="text-xl font-semibold mb-2"></h3>
+      <p id="config-desc" class="text-gray-300 mb-4"></p>
+      <pre><code># plugins/MyRedeemPlus/config.yml
+# MyRedeemPlus Configuration
+
+# License key
+license: "your-license-key-here"
+
+# Language (en, it, fr, de, es, vn, ro, ru, uk, pt, pl, tr, el, hu)
+lang: "en"
+
+storage-method: "yaml"  # "yaml" or "mysql"
+mysql:
+  host: "localhost"
+  port: 3306
+  database: "myredeemplus"
+  username: "root"
+  password: "your_password"
+  use-ssl: false
+</code></pre>
+      <p id="config-codes-desc" class="text-gray-300 mb-4"></p>
+      <pre><code># plugins/MyRedeemPlus/codes.yml
+codes:
+  EXAMPLE:
+    uses: -1
+    playerXIpLimit: 3
+    permission: myredeem.code.EXAMPLE
+    commands:
+    - give %player% diamond 8
+    expiration: -1
+  EXAMPLE2:
+    uses: 10
+    playerXIpLimit: 1
+    permission: myredeem.code.EXAMPLE2
+    commands:
+    - eco give %player% 500
+    expiration: -1
+  EXAMPLE3:
+    uses: 3
+    playerXIpLimit: 1
+    permission: myredeem.code.EXAMPLE3
+    commands:
+    - xp give %player% 10l
+    - effect give %player% minecraft:speed 600 3
+    expiration: -1
+</code></pre>
+      <p id="config-lang-desc" class="text-gray-300 mt-4"></p>
+    </section>
+
+    <section class="mb-12">
+      <h3 id="usage-title" class="text-xl font-semibold mb-2"></h3>
+      <p id="usage-desc" class="text-gray-300 mb-4"></p>
+      <pre><code id="usage-example"></code></pre>
+      <p id="usage-player-desc" class="text-gray-300 mt-4"></p>
+    </section>
+
+    <section class="mb-12">
+      <h3 id="support-title" class="text-xl font-semibold mb-2"></h3>
+      <p id="support-desc" class="text-gray-300 mb-4"></p>
+      <p id="support-note" class="text-gray-300"></p>
+    </section>
+
+    <section class="mb-12">
+      <h3 id="tos-title" class="text-xl font-semibold mb-2"></h3>
+      <ul id="tos-list" class="list-disc list-inside text-gray-300"></ul>
+    </section>
+
+    <section class="mb-12">
+      <h3 id="reviews-title" class="text-xl font-semibold mb-2"></h3>
+      <p id="reviews-desc" class="text-gray-300 mb-4"></p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by Anonymous</span>
+          </div>
+          <p class="text-gray-300">"Very great plugin, awesome support, frequent updates, and a very nice dev, he fixed all of my issues and helped me a lot. :)"</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by Valera1337</span>
+          </div>
+          <p class="text-gray-300">"The best plugin for promo codes! Simple and clear configuration, excellent support! The developer listens to the wishes of users!"</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by Anonymous</span>
+          </div>
+          <p class="text-gray-300">"I had the rocky start plugin, however the author releases updates very frequently and now everything works as it should... And for such a price? That's practically a steal!"</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by loonex</span>
+          </div>
+          <p class="text-gray-300">"Everything is perfect, the plugin works properly, is lightweight, feature rich and easy to configure! Also great is the support which is knowledgeable and helpful."</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by InvisibleT4rget</span>
+          </div>
+          <p class="text-gray-300">"The MyRedeemPlus plugin from Okami is an excellent tool for rewarding players on your server... MyRedeemPlus ? lets redeem some codes! :D"</p>
+        </div>
+      </div>
+      <p id="reviews-feedback" class="text-gray-300 text-center"></p>
+    </section>
+  </main>
+
+  <footer class="py-8 bg-gray-900 text-center text-gray-400 w-full">
+    <p id="footer-copyright"></p>
+    <p class="mt-2">
+      <span id="footer-follow"></span>
+      <a id="footer-spigotmc" href="https://www.spigotmc.org/resources/authors/itsokami_.1705594/" target="_blank" class="text-blue-400 hover:text-blue-300"></a> |
+      <a id="footer-builtbybit" href="https://builtbybit.com/creators/okitask.308103" target="_blank" class="text-blue-400 hover:text-blue-300"></a> |
+      <a id="footer-discord" href="https://discord.gg/yAEj4hvutT" target="_blank" class="text-blue-400 hover:text-blue-300"></a>
+    </p>
+  </footer>
+
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>

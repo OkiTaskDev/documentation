@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OkiTask Plugins & Documentation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a202c, #2d3748);
+      color: #e2e8f0;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    .navbar {
+      background: rgba(26, 32, 44, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 20;
+      transform: translateY(-100%);
+      animation: slideInNav 0.6s ease-out forwards;
+    }
+    @keyframes slideInNav {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(0); }
+    }
+    .navbar a {
+      position: relative;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+    .navbar a:hover {
+      transform: translateY(-2px);
+    }
+    .navbar a:hover::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #60a5fa;
+      transform: scaleX(1);
+      transform-origin: bottom center;
+      transition: transform 0.4s ease;
+    }
+    .navbar a::after {
+      transform: scaleX(0);
+      transform-origin: bottom center;
+    }
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #e2e8f0;
+      transition: transform 0.3s ease;
+    }
+    .hamburger.active {
+      transform: rotate(90deg);
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      opacity: 0;
+      animation: fadeInLinks 0.8s ease-out 0.4s forwards;
+    }
+    @keyframes fadeInLinks {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .language-selector-container {
+      position: relative;
+      display: inline-block;
+    }
+    .language-selector {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .language-selector:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .language-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #2d3748;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 30;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .language-dropdown.active {
+      display: block;
+    }
+    .language-option {
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .language-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .language-option img {
+      width: 24px;
+      height: 24px;
+    }
+    select.language-selector-hidden {
+      display: none;
+    }
+    @media (max-width: 640px) {
+      .hamburger {
+        display: block;
+      }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(26, 32, 44, 0.95);
+        padding: 1rem;
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      .nav-links.active {
+        display: flex;
+        animation: slideInMenu 0.5s ease-out forwards;
+      }
+      @keyframes slideInMenu {
+        0% { opacity: 0; transform: translateY(-20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+      .language-selector-container {
+        width: 100%;
+        margin-top: 1rem;
+      }
+      .language-selector {
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.75rem;
+      }
+      .language-dropdown {
+        width: 100%;
+      }
+    }
+    .hero {
+      background: linear-gradient(135deg, #4299e1, #1d4ed8);
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+      animation: pulse 8s ease-in-out infinite;
+      will-change: transform, opacity;
+      z-index: 0;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1) translateY(0); opacity: 0.4; }
+      50% { transform: scale(1.15) translateY(-15px); opacity: 0.2; }
+    }
+    .hero-text {
+      animation: heroEntrance 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      text-align: center;
+      max-width: 90%;
+      position: relative;
+      z-index: 2;
+    }
+    @keyframes heroEntrance {
+      0% { transform: translateY(-80px) scale(0.95); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .hero h2 {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      line-height: 1.1;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      animation: textGlow 2s ease-in-out infinite alternate;
+    }
+    @keyframes textGlow {
+      0% { text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); }
+      100% { text-shadow: 0 6px 20px rgba(96, 165, 250, 0.5); }
+    }
+    @media (min-width: 768px) {
+      .hero h2 {
+        font-size: clamp(3.5rem, 8vw, 5.5rem);
+      }
+    }
+    .plugin-card {
+      background: rgba(45, 55, 72, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease, opacity 0.4s ease;
+      animation: cardEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      opacity: 0;
+    }
+    .plugin-card:nth-child(1) { animation-delay: 0.3s; }
+    .plugin-card:nth-child(2) { animation-delay: 0.5s; }
+    .plugin-card:nth-child(3) { animation-delay: 0.7s; }
+    @keyframes cardEntrance {
+      0% { transform: translateY(30px) scale(0.9) rotate(2deg); opacity: 0; }
+      100% { transform: translateY(0) scale(1) rotate(0); opacity: 1; }
+    }
+    @media (min-width: 768px) {
+      .plugin-card {
+        animation: cardEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) forwards, float 4s ease-in-out infinite;
+      }
+      .plugin-card:hover {
+        transform: translateY(-12px) scale(1.03);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        animation-play-state: paused;
+      }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      50% { transform: translateY(-10px) rotate(-1deg); }
+    }
+    .btn-primary {
+      background: #60a5fa;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      padding: 0.75rem 1.5rem;
+      font-size: clamp(0.875rem, 2.5vw, 1rem);
+      border-radius: 0.5rem;
+      touch-action: manipulation;
+    }
+    .btn-primary:hover {
+      background: #4299e1;
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: var(--y, 50%);
+      left: var(--x, 50%);
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.4);
+      transition: width 0.6s ease, height 0.6s ease;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .btn-primary:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    .footer {
+      opacity: 0;
+      transform: translateY(60px) scale(0.95);
+      transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .footer.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      display: none;
+    }
+    @media (min-width: 768px) {
+      #particles-js {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) {
+            headerRowIndex = 0;
+          }
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error(e);
+          return "";
+        }
+      }
+      return gk_fileData[filename] || "";
+    }
+
+    // Language translations
+    const translations = {
+      en: {
+        title: "OkiTask Plugins & Documentation",
+        hero_title: "Elevate Your Minecraft Server",
+        hero_subtitle: "Explore powerful plugins crafted to bring style and seamless functionality to your server. Scroll down to view full documentation.",
+        featured_plugins: "Featured Plugins",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Create portals with custom commands for Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Create and manage redeemable codes for Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "Coming Soon",
+        plugin3_desc: "Documentation coming soon.",
+        view_documentation: "View Documentation",
+        footer_copyright: "&copy; 2025 OkiTask. All rights reserved.",
+        footer_follow: "Follow me on",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Join Discord"
+      },
+      it: {
+        title: "Plugin e Documentazione OkiTask",
+        hero_title: "Migliora il tuo server Minecraft",
+        hero_subtitle: "Scopri potenti plugin progettati per portare stile e funzionalità fluida al tuo server. Scorri verso il basso per visualizzare la documentazione completa.",
+        featured_plugins: "Plugin in Evidenza",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Crea portali con comandi personalizzati per Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Crea e gestisci codici riscattabili per Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "Prossimamente",
+        plugin3_desc: "Documentazione in arrivo.",
+        view_documentation: "Visualizza Documentazione",
+        footer_copyright: "&copy; 2025 OkiTask. Tutti i diritti riservati.",
+        footer_follow: "Seguimi su",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Unisciti a Discord"
+      },
+      ro: {
+        title: "Pluginuri și Documentație OkiTask",
+        hero_title: "Îmbunătățește-ți serverul Minecraft",
+        hero_subtitle: "Descoperă pluginuri puternice create pentru a aduce stil și funcționalitate perfectă serverului tău. Derulează în jos pentru a vedea documentația completă.",
+        featured_plugins: "Pluginuri Recomandate",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Creează portaluri cu comenzi personalizate pentru Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Creează și gestionează coduri răscumpărabile pentru Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "În Curând",
+        plugin3_desc: "Documentația va fi disponibilă în curând.",
+        view_documentation: "Vezi Documentația",
+        footer_copyright: "&copy; 2025 OkiTask. Toate drepturile rezervate.",
+        footer_follow: "Urmărește-mă pe",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Alătură-te pe Discord"
+      },
+      de: {
+        title: "OkiTask Plugins & Dokumentation",
+        hero_title: "Verbessere deinen Minecraft-Server",
+        hero_subtitle: "Entdecke leistungsstarke Plugins, die Stil und nahtlose Funktionalität auf deinen Server bringen. Scrolle nach unten, um die vollständige Dokumentation zu sehen.",
+        featured_plugins: "Ausgewählte Plugins",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Erstelle Portale mit benutzerdefinierten Befehlen für Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Erstelle und verwalte einlösbare Codes für Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "Demnächst",
+        plugin3_desc: "Dokumentation folgt in Kürze.",
+        view_documentation: "Dokumentation ansehen",
+        footer_copyright: "&copy; 2025 OkiTask. Alle Rechte vorbehalten.",
+        footer_follow: "Folge mir auf",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Tritt Discord bei"
+      },
+      vi: {
+        title: "Plugin & Tài liệu OkiTask",
+        hero_title: "Nâng tầm Server Minecraft của bạn",
+        hero_subtitle: "Khám phá các plugin mạnh mẽ được thiết kế để mang lại phong cách và chức năng mượt mà cho server của bạn. Cuộn xuống để xem tài liệu đầy đủ.",
+        featured_plugins: "Plugin Nổi bật",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Tạo cổng với các lệnh tùy chỉnh cho Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Tạo và quản lý mã đổi thưởng cho Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "Sắp Ra Mắt",
+        plugin3_desc: "Tài liệu sắp ra mắt.",
+        view_documentation: "Xem Tài liệu",
+        footer_copyright: "&copy; 2025 OkiTask. Mọi quyền được bảo lưu.",
+        footer_follow: "Theo dõi tôi trên",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Tham gia Discord"
+      },
+      es: {
+        title: "Plugins y Documentación de OkiTask",
+        hero_title: "Eleva tu servidor de Minecraft",
+        hero_subtitle: "Explora plugins potentes diseñados para aportar estilo y funcionalidad fluida a tu servidor. Desplázate hacia abajo para ver la documentación completa.",
+        featured_plugins: "Plugins Destacados",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Crea portales con comandos personalizados para Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Crea y gestiona códigos canjeables para Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "Próximamente",
+        plugin3_desc: "Documentación próximamente.",
+        view_documentation: "Ver Documentación",
+        footer_copyright: "&copy; 2025 OkiTask. Todos los derechos reservados.",
+        footer_follow: "Sígueme en",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Únete a Discord"
+      },
+      fr: {
+        title: "Plugins et Documentation OkiTask",
+        hero_title: "Améliorez votre serveur Minecraft",
+        hero_subtitle: "Découvrez des plugins puissants conçus pour apporter style et fonctionnalité fluide à votre serveur. Faites défiler vers le bas pour voir la documentation complète.",
+        featured_plugins: "Plugins en Vedette",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Créez des portails avec des commandes personnalisées pour Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Créez et gérez des codes échangeables pour Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "Bientôt Disponible",
+        plugin3_desc: "Documentation à venir.",
+        view_documentation: "Voir la Documentation",
+        footer_copyright: "&copy; 2025 OkiTask. Tous droits réservés.",
+        footer_follow: "Suivez-moi sur",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Rejoignez Discord"
+      },
+      hu: {
+        title: "OkiTask Bővítmények és Dokumentáció",
+        hero_title: "Emeld fel a Minecraft szerveredet",
+        hero_subtitle: "Fedezd fel a hatékony bővítményeket, amelyek stílust és zökkenőmentes működést hoznak a szerveredre. Görgess lefelé a teljes dokumentáció megtekintéséhez.",
+        featured_plugins: "Kiemelt Bővítmények",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Hozz létre portálokat egyedi parancsokkal a Minecraft 1.9 - 1.21.8 verziókhoz.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Hozz létre és kezelj beváltható kódokat a Minecraft 1.7 - 1.21.8 verziókhoz.",
+        plugin3_title: "Hamarosan",
+        plugin3_desc: "Dokumentáció hamarosan érkezik.",
+        view_documentation: "Dokumentáció megtekintése",
+        footer_copyright: "&copy; 2025 OkiTask. Minden jog fenntartva.",
+        footer_follow: "Kövess engem",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Csatlakozz a Discordhoz"
+      },
+      tr: {
+        title: "OkiTask Eklentileri ve Dokümantasyon",
+        hero_title: "Minecraft Sunucunuzu Yükseltin",
+        hero_subtitle: "Sunucunuza stil ve kesintisiz işlevsellik getiren güçlü eklentileri keşfedin. Tam dokümantasyonu görmek için aşağı kaydırın.",
+        featured_plugins: "Öne Çıkan Eklentiler",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Minecraft 1.9 - 1.21.8 için özel komutlarla portallar oluşturun.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Minecraft 1.7 - 1.21.8 için kullanılabilir kodlar oluşturun ve yönetin.",
+        plugin3_title: "Yakında",
+        plugin3_desc: "Dokümantasyon yakında geliyor.",
+        view_documentation: "Dokümantasyonu Görüntüle",
+        footer_copyright: "&copy; 2025 OkiTask. Tüm hakları saklıdır.",
+        footer_follow: "Beni takip et",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Discord'a Katıl"
+      },
+      pt: {
+        title: "Plugins e Documentação OkiTask",
+        hero_title: "Eleve o seu Servidor Minecraft",
+        hero_subtitle: "Explore plugins poderosos criados para trazer estilo e funcionalidade perfeita ao seu servidor. Role para baixo para ver a documentação completa.",
+        featured_plugins: "Plugins em Destaque",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Crie portais com comandos personalizados para Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Crie e gerencie códigos resgatáveis para Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "Em Breve",
+        plugin3_desc: "Documentação em breve.",
+        view_documentation: "Ver Documentação",
+        footer_copyright: "&copy; 2025 OkiTask. Todos os direitos reservados.",
+        footer_follow: "Siga-me em",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Junte-se ao Discord"
+      },
+      cs: {
+        title: "OkiTask Pluginy a Dokumentace",
+        hero_title: "Zlepšete svůj Minecraft Server",
+        hero_subtitle: "Objevte výkonné pluginy navržené tak, aby přinesly styl a plynulou funkčnost vašemu serveru. Přejděte dolů pro zobrazení úplné dokumentace.",
+        featured_plugins: "Vybrané Pluginy",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Vytvořte portály s vlastními příkazy pro Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Vytvořte a spravujte vyměnitelné kódy pro Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "Již Brzy",
+        plugin3_desc: "Dokumentace přijde brzy.",
+        view_documentation: "Zobrazit Dokumentaci",
+        footer_copyright: "&copy; 2025 OkiTask. Všechna práva vyhrazena.",
+        footer_follow: "Sledujte mě na",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Připojte se k Discordu"
+      },
+      pl: {
+        title: "Wtyczki i Dokumentacja OkiTask",
+        hero_title: "Podnieś poziom swojego serwera Minecraft",
+        hero_subtitle: "Odkryj potężne wtyczki stworzone, aby dodać styl i płynną funkcjonalność Twojemu serwerowi. Przewiń w dół, aby zobaczyć pełną dokumentację.",
+        featured_plugins: "Polecane Wtyczki",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Twórz portale z niestandardowymi komendami dla Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Twórz i zarządzaj kodami do wykorzystania dla Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "Wkrótce",
+        plugin3_desc: "Dokumentacja wkrótce dostępna.",
+        view_documentation: "Zobacz Dokumentację",
+        footer_copyright: "&copy; 2025 OkiTask. Wszelkie prawa zastrzeżone.",
+        footer_follow: "Śledź mnie na",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Dołącz do Discorda"
+      },
+      ru: {
+        title: "Плагины и Документация OkiTask",
+        hero_title: "Улучшите свой сервер Minecraft",
+        hero_subtitle: "Исследуйте мощные плагины, созданные для придания стиля и бесперебойной работы вашему серверу. Прокрутите вниз, чтобы просмотреть полную документацию.",
+        featured_plugins: "Избранные Плагины",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Создавайте порталы с пользовательскими командами для Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Создавайте и управляйте кодами для активации в Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "Скоро",
+        plugin3_desc: "Документация скоро появится.",
+        view_documentation: "Посмотреть Документацию",
+        footer_copyright: "&copy; 2025 OkiTask. Все права защищены.",
+        footer_follow: "Следите за мной на",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Присоединяйтесь к Discord"
+      },
+      uk: {
+        title: "Плагіни та Документація OkiTask",
+        hero_title: "Покращте свій сервер Minecraft",
+        hero_subtitle: "Досліджуйте потужні плагіни, створені для додання стилю та безперебійної функціональності вашому серверу. Прокрутіть вниз, щоб переглянути повну документацію.",
+        featured_plugins: "Рекомендовані Плагіни",
+        plugin1_title: "MyPortalsCommands",
+        plugin1_desc: "Створюйте портали з власними командами для Minecraft 1.9 - 1.21.8.",
+        plugin2_title: "MyRedeemPlus",
+        plugin2_desc: "Створюйте та керуйте кодами для активації в Minecraft 1.7 - 1.21.8.",
+        plugin3_title: "Скоро",
+        plugin3_desc: "Документація з'явиться незабаром.",
+        view_documentation: "Переглянути Документацію",
+        footer_copyright: "&copy; 2025 OkiTask. Усі права захищені.",
+        footer_follow: "Слідкуйте за мною на",
+        discord: "Discord",
+        spigotmc: "SpigotMC",
+        builtbybit: "BuiltByBit",
+        join_discord: "Приєднуйтесь до Discord"
+      }
+    };
+
+    // Language options with local flag paths
+    const languageOptions = [
+      { code: 'en', name: 'English', flag: 'flags/gb.png' },
+      { code: 'it', name: 'Italiano', flag: 'flags/it.png' },
+      { code: 'ro', name: 'Română', flag: 'flags/ro.png' },
+      { code: 'de', name: 'Deutsch', flag: 'flags/de.png' },
+      { code: 'vi', name: 'Tiếng Việt', flag: 'flags/vn.png' },
+      { code: 'es', name: 'Español', flag: 'flags/es.png' },
+      { code: 'fr', name: 'Français', flag: 'flags/fr.png' },
+      { code: 'hu', name: 'Magyar', flag: 'flags/hu.png' },
+      { code: 'tr', name: 'Türkçe', flag: 'flags/tr.png' },
+      { code: 'pt', name: 'Português', flag: 'flags/pt.png' },
+      { code: 'cs', name: 'Čeština', flag: 'flags/cz.png' },
+      { code: 'pl', name: 'Polski', flag: 'flags/pl.png' },
+      { code: 'ru', name: 'Русский', flag: 'flags/ru.png' },
+      { code: 'uk', name: 'Українська', flag: 'flags/ua.png' }
+    ];
+
+    // Function to update text content based on selected language
+    function updateLanguage(lang) {
+      document.documentElement.lang = lang;
+      document.title = translations[lang].title;
+      document.querySelector('.hero h2').textContent = translations[lang].hero_title;
+      document.querySelector('.hero p').textContent = translations[lang].hero_subtitle;
+      document.querySelector('.featured-plugins-title').textContent = translations[lang].featured_plugins;
+      document.querySelectorAll('.plugin-card h3')[0].textContent = translations[lang].plugin1_title;
+      document.querySelectorAll('.plugin-card p')[0].textContent = translations[lang].plugin1_desc;
+      document.querySelectorAll('.plugin-card h3')[1].textContent = translations[lang].plugin2_title;
+      document.querySelectorAll('.plugin-card p')[1].textContent = translations[lang].plugin2_desc;
+      document.querySelectorAll('.plugin-card h3')[2].textContent = translations[lang].plugin3_title;
+      document.querySelectorAll('.plugin-card p')[2].textContent = translations[lang].plugin3_desc;
+      document.querySelectorAll('.btn-primary').forEach(btn => btn.textContent = translations[lang].view_documentation);
+      document.querySelector('.footer p:first-child').innerHTML = translations[lang].footer_copyright;
+      document.querySelector('.footer p:last-child').innerHTML = `${translations[lang].footer_follow} 
+        <a href="https://www.spigotmc.org/resources/authors/itsokami_.1705594/" target="_blank" class="text-blue-400 hover:text-blue-300">${translations[lang].spigotmc}</a> | 
+        <a href="https://builtbybit.com/creators/okitask.308103" target="_blank" class="text-blue-400 hover:text-blue-300">${translations[lang].builtbybit}</a> | 
+        ${translations[lang].join_discord.replace('Discord', '<a href="https://discord.gg/yAEj4hvutT" target="_blank" class="text-blue-400 hover:text-blue-300">Discord</a>')}`;
+      document.querySelectorAll('.nav-links a')[0].textContent = translations[lang].discord;
+      document.querySelectorAll('.nav-links a')[1].textContent = translations[lang].spigotmc;
+      document.querySelectorAll('.nav-links a')[2].textContent = translations[lang].builtbybit;
+      // Update selected language display
+      const selectedLang = languageOptions.find(opt => opt.code === lang);
+      document.querySelector('.language-selector span').textContent = selectedLang.name;
+      document.querySelector('.language-selector img').src = selectedLang.flag;
+      localStorage.setItem('language', lang);
+    }
+  </script>
+
+  <!-- Main Content -->
+  <main class="p-4 sm:p-8">
+    <!-- Navbar -->
+    <nav class="navbar py-4 px-4 sm:px-8">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <h1 class="text-xl sm:text-2xl font-bold text-blue-400">OkiTask Plugins</h1>
+        <div class="flex items-center gap-4">
+          <div class="language-selector-container">
+            <div class="language-selector">
+              <img src="flags/gb.png" alt="Flag">
+              <span>English</span>
+            </div>
+            <div class="language-dropdown">
+              <!-- Populated by JavaScript -->
+            </div>
+            <select class="language-selector-hidden" onchange="updateLanguage(this.value)">
+              <option value="en">English</option>
+              <option value="it">Italiano</option>
+              <option value="ro">Română</option>
+              <option value="de">Deutsch</option>
+              <option value="vi">Tiếng Việt</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+              <option value="hu">Magyar</option>
+              <option value="tr">Türkçe</option>
+              <option value="pt">Português</option>
+              <option value="cs">Čeština</option>
+              <option value="pl">Polski</option>
+              <option value="ru">Русский</option>
+              <option value="uk">Українська</option>
+            </select>
+          </div>
+          <div class="hamburger">☰</div>
+        </div>
+        <div class="nav-links space-x-4 sm:space-x-6">
+          <a href="https://discord.gg/yAEj4hvutT" target="_blank" class="text-gray-200 hover:text-blue-400 font-semibold">Discord</a>
+          <a href="https://www.spigotmc.org/resources/authors/itsokami_.1705594/" target="_blank" class="text-gray-200 hover:text-blue-400 font-semibold">SpigotMC</a>
+          <a href="https://builtbybit.com/creators/okitask.308103" target="_blank" class="text-gray-200 hover:text-blue-400 font-semibold">BuiltByBit</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section with Featured Plugins -->
+    <section class="hero">
+      <div class="hero-background"></div>
+      <div id="particles-js"></div>
+      <div class="hero-text py-12 sm:py-16 mt-12 sm:mt-16">
+        <h2 class="font-bold mb-6 text-white">Elevate Your Minecraft Server</h2>
+        <p class="text-base sm:text-lg md:text-xl text-gray-200 mb-12 sm:mb-16 max-w-3xl mx-auto">Explore powerful plugins crafted to bring style and seamless functionality to your server. Scroll down to view full documentation.</p>
+        <!-- Featured Plugins Section -->
+        <div class="mt-16 sm:mt-20">
+          <h2 class="featured-plugins-title text-2xl sm:text-3xl font-bold mb-12 sm:mb-16 text-center text-white">Featured Plugins</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 max-w-4xl mx-auto">
+            <div class="plugin-card rounded-lg p-6">
+              <h3 class="text-lg sm:text-xl font-semibold mb-3 text-blue-300">MyPortalsCommands</h3>
+              <p class="text-gray-400 mb-4">Create portals with custom commands for Minecraft 1.9 - 1.21.8.</p>
+              <div class="flex flex-wrap gap-2 mb-4 text-sm">
+                <span class="bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full">Rating: 5/5 on SpigotMC</span>
+                <span class="bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full">Downloads: 6,610</span>
+                <span class="bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full">Last Update: Jul 27, 2025</span>
+              </div>
+              <a href="myportalscommands.html" class="btn-primary inline-block text-white font-semibold">View Documentation</a>
+            </div>
+            <div class="plugin-card rounded-lg p-6">
+              <h3 class="text-lg sm:text-xl font-semibold mb-3 text-blue-300">MyRedeemPlus</h3>
+              <p class="text-gray-400 mb-4">Create and manage redeemable codes for Minecraft 1.7 - 1.21.8.</p>
+              <div class="flex flex-wrap gap-2 mb-4 text-sm">
+                <span class="bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full">Rating: 5/5 on BuiltByBit</span>
+                <span class="bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full">Downloads: 11</span>
+                <span class="bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full">Last Update: Aug 3, 2025</span>
+              </div>
+              <a href="myredeemplus.html" class="btn-primary inline-block text-white font-semibold">View Documentation</a>
+            </div>
+            <div class="plugin-card rounded-lg p-6">
+              <h3 class="text-lg sm:text-xl font-semibold mb-3 text-blue-300">Coming Soon</h3>
+              <p class="text-gray-400 mb-4">Documentation coming soon.</p>
+              <div class="flex flex-wrap gap-2 mb-4 text-sm">
+                <span class="bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full">Rating: ?/5</span>
+                <span class="bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full">Downloads: 0</span>
+                <span class="bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full">Last Update: September ??, 2025</span>
+              </div>
+              <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0&list=RDxvFZjo5PgG0&start_radio=1" class="btn-primary inline-block text-white font-semibold">View Documentation</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer py-12 bg-gray-900 text-center text-gray-400 w-full">
+    <p>&copy; 2025 OkiTask. All rights reserved.</p>
+    <p class="mt-2">
+      Follow me on 
+      <a href="https://www.spigotmc.org/resources/authors/itsokami_.1705594/" target="_blank" class="text-blue-400 hover:text-blue-300">SpigotMC</a> | 
+      <a href="https://builtbybit.com/creators/okitask.308103" target="_blank" class="text-blue-400 hover:text-blue-300">BuiltByBit</a> | 
+      Join <a href="https://discord.gg/yAEj4hvutT" target="_blank" class="text-blue-400 hover:text-blue-300">Discord</a>
+    </p>
+  </footer>
+
+  <script>
+    // Lazy-load particles.js
+    function loadParticles() {
+      if (window.innerWidth >= 768) {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js';
+        script.async = true;
+        script.onload = () => {
+          particlesJS('particles-js', {
+            particles: {
+              number: { value: 80, density: { enable: true, value_area: 1000 } },
+              color: { value: '#60a5fa' },
+              shape: { type: 'circle' },
+              opacity: { value: 0.6, random: true, anim: { enable: true, speed: 1.5, opacity_min: 0.2 } },
+              size: { value: 4, random: true, anim: { enable: true, speed: 2, size_min: 0.5 } },
+              line_linked: { enable: true, distance: 120, color: '#60a5fa', opacity: 0.5, width: 1.2 },
+              move: { enable: true, speed: 3, direction: 'none', random: true, straight: false, out_mode: 'out' }
+            },
+            interactivity: {
+              detect_on: 'canvas',
+              events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: true, mode: 'push' }, resize: true },
+              modes: { grab: { distance: 140, line_linked: { opacity: 0.7 } }, push: { particles_nb: 6 } }
+            },
+            retina_detect: true
+          });
+        };
+        document.body.appendChild(script);
+      }
+    }
+
+    // Throttle function for scroll events
+    function throttle(fn, wait) {
+      let lastTime = 0;
+      return function (...args) {
+        const now = new Date().getTime();
+        if (now - lastTime >= wait) {
+          fn.apply(this, args);
+          lastTime = now;
+        }
+      };
+    }
+
+    // Parallax effect on hero-background div
+    window.addEventListener('scroll', throttle(() => {
+      if (window.innerWidth >= 768) {
+        const heroBackground = document.querySelector('.hero-background');
+        const scrollPosition = window.pageYOffset;
+        heroBackground.style.transform = `translateY(${scrollPosition * 0.15}px) scale(1.15)`;
+      }
+    }, 100));
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Trigger a subtle bounce for plugin cards on visibility
+          if (entry.target.classList.contains('plugin-card')) {
+            entry.target.animate([
+              { transform: 'translateY(0) scale(1)' },
+              { transform: 'translateY(-10px) scale(1.02)' },
+              { transform: 'translateY(0) scale(1)' }
+            ], {
+              duration: 600,
+              easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+            });
+          }
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.plugin-card, .footer').forEach(element => {
+      observer.observe(element);
+    });
+
+    // Ripple effect for buttons
+    document.querySelectorAll('.btn-primary').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const rect = button.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        button.style.setProperty('--x', `${x}px`);
+        button.style.setProperty('--y', `${y}px`);
+        // Add a subtle bounce effect on click
+        button.animate([
+          { transform: 'scale(1)' },
+          { transform: 'scale(0.95)' },
+          { transform: 'scale(1.05)' },
+          { transform: 'scale(1)' }
+        ], {
+          duration: 300,
+          easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+        });
+      });
+    });
+
+    // Hamburger menu toggle
+    document.querySelector('.hamburger').addEventListener('click', () => {
+      const hamburger = document.querySelector('.hamburger');
+      const navLinks = document.querySelector('.nav-links');
+      hamburger.classList.toggle('active');
+      navLinks.classList.toggle('active');
+    });
+
+    // Custom language dropdown
+    const languageSelector = document.querySelector('.language-selector');
+    const languageDropdown = document.querySelector('.language-dropdown');
+    const languageSelect = document.querySelector('.language-selector-hidden');
+
+    // Populate dropdown
+    languageOptions.forEach(opt => {
+      const div = document.createElement('div');
+      div.className = 'language-option';
+      div.dataset.lang = opt.code;
+      div.innerHTML = `<img src="${opt.flag}" alt="${opt.name} flag"> ${opt.name}`;
+      div.addEventListener('click', () => {
+        languageSelect.value = opt.code;
+        updateLanguage(opt.code);
+        languageDropdown.classList.remove('active');
+      });
+      languageDropdown.appendChild(div);
+    });
+
+    // Toggle dropdown
+    languageSelector.addEventListener('click', () => {
+      languageDropdown.classList.toggle('active');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!languageSelector.contains(e.target) && !languageDropdown.contains(e.target)) {
+        languageDropdown.classList.remove('active');
+      }
+    });
+
+    // Load particles and language on page load
+    window.addEventListener('load', () => {
+      loadParticles();
+      // Set initial language from localStorage or default to English
+      const savedLang = localStorage.getItem('language') || 'en';
+      languageSelect.value = savedLang;
+      updateLanguage(savedLang);
+    });
+  </script>
+</body>
+</html>

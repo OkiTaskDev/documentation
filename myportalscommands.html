@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPortalsCommands Documentation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+  body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  color: #e2e8f0;
+  min-height: 100vh;
+  margin: 0;
+}
+.navbar {
+  background: rgba(26, 32, 44, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+}
+.navbar a {
+  position: relative;
+  transition: color 0.3s ease;
+}
+.navbar a:hover::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #60a5fa;
+  transform: scaleX(1);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease;
+}
+.navbar a::after {
+  transform: scaleX(0);
+  transform-origin: bottom left;
+}
+.language-selector-container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-block;
+  text-align: center;
+}
+.language-selector {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.language-selector:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.language-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2d3748;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 30;
+  max-height: 300px;
+  overflow-y: auto;
+  min-width: 150px;
+}
+.language-dropdown.active {
+  display: block;
+}
+.language-option {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.language-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.language-option img {
+  width: 24px;
+  height: 24px;
+}
+select.language-selector-hidden {
+  display: none;
+}
+@media (max-width: 640px) {
+  .navbar {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .language-selector-container {
+    position: static;
+    transform: none;
+    width: 100%;
+    margin: 1rem 0;
+    order: 2;
+    text-align: center;
+  }
+  .language-selector {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    font-size: 1rem;
+    padding: 0.75rem;
+    justify-content: center;
+  }
+  .language-dropdown {
+    width: 100%;
+    max-width: 300px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .hamburger {
+    display: block;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #e2e8f0;
+    transition: transform 0.3s ease;
+    order: 1;
+  }
+  .hamburger.active {
+    transform: rotate(90deg);
+  }
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(26, 32, 44, 0.95);
+    padding: 1rem;
+    opacity: 0;
+    transform: translateY(-20px);
+    order: 3;
+  }
+  .nav-links.active {
+    display: flex;
+    animation: slideInMenu 0.5s ease-out forwards;
+  }
+  @keyframes slideInMenu {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+pre {
+  background: rgba(45, 55, 72, 0.95);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+code {
+  font-family: 'Courier New', Courier, monospace;
+  color: #e2e8f0;
+}
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  background: #000;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+}
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.review-card {
+  background: rgba(45, 55, 72, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.star {
+  color: #f6e05e;
+}
+
+/* New styles */
+h1 {
+  color: #60a5fa; /* Azzurro per "OkiTask Plugins" */
+  font-size: 2rem; /* Aggiunto per coerenza con il design */
+}
+
+/* Stile per statistiche come "Downloads", "Rating", "Updated" */
+#rating, #downloads, #updated {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(45, 55, 72, 0.95); /* Sfondo simile al pre */
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+#rating strong, #downloads strong, #updated strong {
+  color: #e2e8f0; /* Grigio chiaro per il testo */
+  font-weight: 700; /* Grassetto */
+  margin-right: 0.5rem;
+}
+#rating span, #downloads span, #updated span {
+  color: #a0aec0; /* Grigio più scuro per il valore */
+  font-weight: 500;
+}
+
+/* Icone per un "sistema figo" */
+#rating::before {
+  content: '⭐'; /* Icona per Rating */
+  margin-right: 0.5rem;
+  color: #f6e05e; /* Colore stella */
+}
+#downloads::before {
+  content: '⬇'; /* Icona per Downloads */
+  margin-right: 0.5rem;
+  color: #60a5fa; /* Azzurro per coerenza */
+}
+#updated::before {
+  content: '⏰'; /* Icona per Updated */
+  margin-right: 0.5rem;
+  color: #a0aec0; /* Grigio per coerenza */
+}
+  </style>
+</head>
+<body>
+  <script>
+    // Language translations
+    const translations = {
+      en: {
+        title: "MyPortalsCommands Documentation",
+        header: "OkiTask Plugins",
+        nav_home: "Home",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Create portals that execute custom commands to enhance your Minecraft server experience. Fully configurable messages and compatible with Minecraft versions 1.9 to 1.21.8.",
+        rating: "<strong>Rating:</strong> 5/5 (24 ratings)",
+        downloads: "<strong>Downloads:</strong> 6,610",
+        updated: "<strong>Updated:</strong> Jul 27, 2025",
+        tutorial_title: "Tutorial",
+        tutorial_desc: "Watch the tutorial video by <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> for version 3.6.2:",
+        installation_title: "Installation",
+        installation_steps: [
+          "Download the latest version from <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>.",
+          "Place the <code>MyPortalsCommands.jar</code> file in your server's <code>plugins</code> folder.",
+          "Restart your server to load the plugin.",
+          "Configure the plugin in <code>plugins/MyPortalsCommands/config.yml</code>."
+        ],
+        commands_title: "Commands",
+        commands_alias: "Alias: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Open the GUI.",
+          "<code>/myportalscommands reload</code> - Reload the plugin configuration.",
+          "<code>/myportalscommands wand</code> - Get the portal selection wand.",
+          "<code>/myportalscommands setpos1</code> - Set the first position of the portal.",
+          "<code>/myportalscommands setpos2</code> - Set the second position of the portal."
+        ],
+        commands_permission: "<strong>Permission:</strong> <code>myportalscommands.admin</code> - Grants access to all staff commands.",
+        config_title: "Configuration",
+        config_desc: "Edit the configuration file located at <code>plugins/MyPortalsCommands/config.yml</code>. Below is an example configuration with combat plugin support:",
+        config_combat_desc: "All messages are configurable in the <code>messages</code> section of the config file. The <code>combat</code> section allows integration with combat plugins:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Prevents portal usage when a player is in combat, if enabled.",
+          "<code>plugins</code> - Lists supported combat plugins (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>) that the plugin checks for combat status."
+        ],
+        support_title: "Support",
+        support_desc: "Found a bug or need help? Join our Discord server for fast and excellent support: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Join Discord</a>.",
+        support_note: "Please do not report bugs in SpigotMC reviews. Use the Discord server for bug reports and support requests.",
+        tos_title: "Terms of Service",
+        tos_list: [
+          "You cannot sell this plugin.",
+          "You cannot decompile it.",
+          "You cannot use parts of the plugin code.",
+          "You cannot claim this plugin as your own."
+        ],
+        reviews_title: "Reviews",
+        reviews_desc: "Our community loves MyPortalsCommands! With an average rating of <strong>5/5</strong> from 24 reviews on SpigotMC, here’s what users are saying:",
+        reviews_feedback: "Have you tried MyPortalsCommands? Share your feedback on <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> and help our community grow!",
+        footer_copyright: "&copy; 2025 OkiTask. All rights reserved.",
+        footer_follow: "Follow me on",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Join Discord"
+      },
+      it: {
+        title: "Documentazione MyPortalsCommands",
+        header: "Plugin OkiTask",
+        nav_home: "Home",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Crea portali che eseguono comandi personalizzati per migliorare l'esperienza del tuo server Minecraft. Messaggi completamente configurabili e compatibile con le versioni di Minecraft da 1.9 a 1.21.8.",
+        rating: "<strong>Valutazione:</strong> 5/5 (24 valutazioni)",
+        downloads: "<strong>Download:</strong> 6,610",
+        updated: "<strong>Aggiornato:</strong> 27 Luglio 2025",
+        tutorial_title: "Tutorial",
+        tutorial_desc: "Guarda il video tutorial di <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> per la versione 3.6.2:",
+        installation_title: "Installazione",
+        installation_steps: [
+          "Scarica l'ultima versione da <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>.",
+          "Inserisci il file <code>MyPortalsCommands.jar</code> nella cartella <code>plugins</code> del tuo server.",
+          "Riavvia il server per caricare il plugin.",
+          "Configura il plugin in <code>plugins/MyPortalsCommands/config.yml</code>."
+        ],
+        commands_title: "Comandi",
+        commands_alias: "Alias: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Apre la GUI.",
+          "<code>/myportalscommands reload</code> - Ricarica la configurazione del plugin.",
+          "<code>/myportalscommands wand</code> - Ottieni la bacchetta di selezione del portale.",
+          "<code>/myportalscommands setpos1</code> - Imposta la prima posizione del portale.",
+          "<code>/myportalscommands setpos2</code> - Imposta la seconda posizione del portale."
+        ],
+        commands_permission: "<strong>Permesso:</strong> <code>myportalscommands.admin</code> - Garantisce l'accesso a tutti i comandi dello staff.",
+        config_title: "Configurazione",
+        config_desc: "Modifica il file di configurazione situato in <code>plugins/MyPortalsCommands/config.yml</code>. Di seguito un esempio di configurazione con supporto per plugin di combattimento:",
+        config_combat_desc: "Tutti i messaggi sono configurabili nella sezione <code>messages</code> del file di configurazione. La sezione <code>combat</code> consente l'integrazione con plugin di combattimento:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Impedisce l'uso del portale quando un giocatore è in combattimento, se abilitato.",
+          "<code>plugins</code> - Elenca i plugin di combattimento supportati (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>) che il plugin verifica per lo stato di combattimento."
+        ],
+        support_title: "Supporto",
+        support_desc: "Hai trovato un bug o hai bisogno di aiuto? Unisciti al nostro server Discord per un supporto rapido ed eccellente: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Unisciti a Discord</a>.",
+        support_note: "Per favore, non segnalare bug nelle recensioni di SpigotMC. Usa il server Discord per segnalazioni di bug e richieste di supporto.",
+        tos_title: "Termini di Servizio",
+        tos_list: [
+          "Non puoi vendere questo plugin.",
+          "Non puoi decompilarlo.",
+          "Non puoi utilizzare parti del codice del plugin.",
+          "Non puoi reclamare questo plugin come tuo."
+        ],
+        reviews_title: "Recensioni",
+        reviews_desc: "La nostra comunità ama MyPortalsCommands! Con una valutazione media di <strong>5/5</strong> da 24 recensioni su SpigotMC, ecco cosa dicono gli utenti:",
+        reviews_feedback: "Hai provato MyPortalsCommands? Condividi il tuo feedback su <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> e aiuta la nostra comunità a crescere!",
+        footer_copyright: "&copy; 2025 OkiTask. Tutti i diritti riservati.",
+        footer_follow: "Seguimi su",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Unisciti a Discord"
+      },
+      ro: {
+        title: "Documentație MyPortalsCommands",
+        header: "Pluginuri OkiTask",
+        nav_home: "Acasă",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Creează portaluri care execută comenzi personalizate pentru a îmbunătăți experiența serverului tău Minecraft. Mesaje complet configurabile și compatibile cu versiunile Minecraft de la 1.9 la 1.21.8.",
+        rating: "<strong>Evaluare:</strong> 5/5 (24 evaluări)",
+        downloads: "<strong>Descărcări:</strong> 6,610",
+        updated: "<strong>Actualizat:</strong> 27 Iulie 2025",
+        tutorial_title: "Tutorial",
+        tutorial_desc: "Urmărește videoclipul tutorial de <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> pentru versiunea 3.6.2:",
+        installation_title: "Instalare",
+        installation_steps: [
+          "Descarcă cea mai recentă versiune de pe <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>.",
+          "Plasează fișierul <code>MyPortalsCommands.jar</code> în folderul <code>plugins</code> al serverului tău.",
+          "Repornește serverul pentru a încărca pluginul.",
+          "Configurează pluginul în <code>plugins/MyPortalsCommands/config.yml</code>."
+        ],
+        commands_title: "Comenzi",
+        commands_alias: "Alias: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Deschide interfața grafică.",
+          "<code>/myportalscommands reload</code> - Reîncarcă configurația pluginului.",
+          "<code>/myportalscommands wand</code> - Obține bagheta de selecție a portalului.",
+          "<code>/myportalscommands setpos1</code> - Setează prima poziție a portalului.",
+          "<code>/myportalscommands setpos2</code> - Setează a doua poziție a portalului."
+        ],
+        commands_permission: "<strong>Permisiune:</strong> <code>myportalscommands.admin</code> - Oferă acces la toate comenzile administrative.",
+        config_title: "Configurare",
+        config_desc: "Editează fișierul de configurare situat în <code>plugins/MyPortalsCommands/config.yml</code>. Mai jos este un exemplu de configurare cu suport pentru pluginuri de luptă:",
+        config_combat_desc: "Toate mesajele sunt configurabile în secțiunea <code>messages</code> a fișierului de configurare. Secțiunea <code>combat</code> permite integrarea cu pluginuri de luptă:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Împiedică utilizarea portalului când un jucător este în luptă, dacă este activată.",
+          "<code>plugins</code> - Listează pluginurile de luptă suportate (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>) pe care pluginul le verifică pentru starea de luptă."
+        ],
+        support_title: "Suport",
+        support_desc: "Ai găsit un bug sau ai nevoie de ajutor? Alătură-te serverului nostru Discord pentru suport rapid și excelent: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Alătură-te pe Discord</a>.",
+        support_note: "Te rugăm să nu raportezi bug-uri în recenziile SpigotMC. Folosește serverul Discord pentru rapoarte de bug-uri și cereri de suport.",
+        tos_title: "Termeni de Serviciu",
+        tos_list: [
+          "Nu poți vinde acest plugin.",
+          "Nu îl poți decompila.",
+          "Nu poți folosi părți din codul pluginului.",
+          "Nu poți pretinde că acest plugin este al tău."
+        ],
+        reviews_title: "Recenzii",
+        reviews_desc: "Comunitatea noastră iubește MyPortalsCommands! Cu o evaluare medie de <strong>5/5</strong> din 24 de recenzii pe SpigotMC, iată ce spun utilizatorii:",
+        reviews_feedback: "Ai încercat MyPortalsCommands? Împărtășește-ți feedback-ul pe <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> și ajută comunitatea noastră să crească!",
+        footer_copyright: "&copy; 2025 OkiTask. Toate drepturile rezervate.",
+        footer_follow: "Urmărește-mă pe",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Alătură-te pe Discord"
+      },
+      de: {
+        title: "MyPortalsCommands Dokumentation",
+        header: "OkiTask Plugins",
+        nav_home: "Startseite",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Erstelle Portale, die benutzerdefinierte Befehle ausführen, um das Erlebnis deines Minecraft-Servers zu verbessern. Vollständig konfigurierbare Nachrichten und kompatibel mit Minecraft-Versionen von 1.9 bis 1.21.8.",
+        rating: "<strong>Bewertung:</strong> 5/5 (24 Bewertungen)",
+        downloads: "<strong>Downloads:</strong> 6.610",
+        updated: "<strong>Aktualisiert:</strong> 27. Juli 2025",
+        tutorial_title: "Tutorial",
+        tutorial_desc: "Schaue das Tutorial-Video von <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> für Version 3.6.2:",
+        installation_title: "Installation",
+        installation_steps: [
+          "Lade die neueste Version von <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> herunter.",
+          "Platziere die Datei <code>MyPortalsCommands.jar</code> im Ordner <code>plugins</code> deines Servers.",
+          "Starte den Server neu, um das Plugin zu laden.",
+          "Konfiguriere das Plugin in <code>plugins/MyPortalsCommands/config.yml</code>."
+        ],
+        commands_title: "Befehle",
+        commands_alias: "Alias: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Öffnet die Benutzeroberfläche.",
+          "<code>/myportalscommands reload</code> - Lädt die Plugin-Konfiguration neu.",
+          "<code>/myportalscommands wand</code> - Erhalte den Portal-Auswahlstab.",
+          "<code>/myportalscommands setpos1</code> - Setzt die erste Position des Portals.",
+          "<code>/myportalscommands setpos2</code> - Setzt die zweite Position des Portals."
+        ],
+        commands_permission: "<strong>Berechtigung:</strong> <code>myportalscommands.admin</code> - Gewährt Zugriff auf alle Admin-Befehle.",
+        config_title: "Konfiguration",
+        config_desc: "Bearbeite die Konfigurationsdatei unter <code>plugins/MyPortalsCommands/config.yml</code>. Hier ist ein Beispiel für eine Konfiguration mit Unterstützung für Kampf-Plugins:",
+        config_combat_desc: "Alle Nachrichten sind im Abschnitt <code>messages</code> der Konfigurationsdatei anpassbar. Der Abschnitt <code>combat</code> ermöglicht die Integration mit Kampf-Plugins:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Verhindert die Nutzung von Portalen, wenn ein Spieler im Kampf ist, falls aktiviert.",
+          "<code>plugins</code> - Listet unterstützte Kampf-Plugins auf (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>), die der Plugin auf Kampfstatus überprüft."
+        ],
+        support_title: "Support",
+        support_desc: "Hast du einen Fehler gefunden oder benötigst du Hilfe? Tritt unserem Discord-Server bei, um schnellen und hervorragenden Support zu erhalten: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Tritt Discord bei</a>.",
+        support_note: "Bitte melde keine Fehler in den SpigotMC-Bewertungen. Nutze den Discord-Server für Fehlerberichte und Supportanfragen.",
+        tos_title: "Nutzungsbedingungen",
+        tos_list: [
+          "Du darfst dieses Plugin nicht verkaufen.",
+          "Du darfst es nicht dekompilieren.",
+          "Du darfst keine Teile des Plugin-Codes verwenden.",
+          "Du darfst dieses Plugin nicht als dein eigenes ausgeben."
+        ],
+        reviews_title: "Bewertungen",
+        reviews_desc: "Unsere Community liebt MyPortalsCommands! Mit einer durchschnittlichen Bewertung von <strong>5/5</strong> aus 24 Bewertungen auf SpigotMC, hier ist, was Nutzer sagen:",
+        reviews_feedback: "Hast du MyPortalsCommands ausprobiert? Teile dein Feedback auf <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> und hilf unserer Community zu wachsen!",
+        footer_copyright: "&copy; 2025 OkiTask. Alle Rechte vorbehalten.",
+        footer_follow: "Folge mir auf",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Tritt Discord bei"
+      },
+      vi: {
+        title: "Tài liệu MyPortalsCommands",
+        header: "Plugin OkiTask",
+        nav_home: "Trang chủ",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Tạo các cổng thực thi lệnh tùy chỉnh để nâng cao trải nghiệm máy chủ Minecraft của bạn. Thông báo hoàn toàn có thể tùy chỉnh và tương thích với các phiên bản Minecraft từ 1.9 đến 1.21.8.",
+        rating: "<strong>Xếp hạng:</strong> 5/5 (24 đánh giá)",
+        downloads: "<strong>Lượt tải:</strong> 6,610",
+        updated: "<strong>Cập nhật:</strong> 27 Tháng 7, 2025",
+        tutorial_title: "Hướng dẫn",
+        tutorial_desc: "Xem video hướng dẫn bởi <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> cho phiên bản 3.6.2:",
+        installation_title: "Cài đặt",
+        installation_steps: [
+          "Tải phiên bản mới nhất từ <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>.",
+          "Đặt tệp <code>MyPortalsCommands.jar</code> vào thư mục <code>plugins</code> của máy chủ.",
+          "Khởi động lại máy chủ để tải plugin.",
+          "Cấu hình plugin trong <code>plugins/MyPortalsCommands/config.yml</code>."
+        ],
+        commands_title: "Lệnh",
+        commands_alias: "Bí danh: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Mở giao diện người dùng.",
+          "<code>/myportalscommands reload</code> - Tải lại cấu hình plugin.",
+          "<code>/myportalscommands wand</code> - Nhận đũa phép chọn cổng.",
+          "<code>/myportalscommands setpos1</code> - Đặt vị trí đầu tiên của cổng.",
+          "<code>/myportalscommands setpos2</code> - Đặt vị trí thứ hai của cổng."
+        ],
+        commands_permission: "<strong>Quyền:</strong> <code>myportalscommands.admin</code> - Cấp quyền truy cập vào tất cả các lệnh quản trị.",
+        config_title: "Cấu hình",
+        config_desc: "Chỉnh sửa tệp cấu hình tại <code>plugins/MyPortalsCommands/config.yml</code>. Dưới đây là một ví dụ cấu hình với hỗ trợ plugin chiến đấu:",
+        config_combat_desc: "Tất cả thông báo có thể được tùy chỉnh trong phần <code>messages</code> của tệp cấu hình. Phần <code>combat</code> cho phép tích hợp với các plugin chiến đấu:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Ngăn sử dụng cổng khi người chơi đang chiến đấu, nếu được kích hoạt.",
+          "<code>plugins</code> - Liệt kê các plugin chiến đấu được hỗ trợ (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>) mà plugin kiểm tra trạng thái chiến đấu."
+        ],
+        support_title: "Hỗ trợ",
+        support_desc: "Tìm thấy lỗi hoặc cần trợ giúp? Tham gia máy chủ Discord của chúng tôi để được hỗ trợ nhanh chóng và tuyệt vời: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Tham gia Discord</a>.",
+        support_note: "Vui lòng không báo cáo lỗi trong các đánh giá SpigotMC. Sử dụng máy chủ Discord để báo cáo lỗi và yêu cầu hỗ trợ.",
+        tos_title: "Điều khoản Dịch vụ",
+        tos_list: [
+          "Bạn không thể bán plugin này.",
+          "Bạn không thể dịch ngược nó.",
+          "Bạn không thể sử dụng các phần mã của plugin.",
+          "Bạn không thể nhận plugin này là của riêng bạn."
+        ],
+        reviews_title: "Đánh giá",
+        reviews_desc: "Cộng đồng của chúng tôi yêu thích MyPortalsCommands! Với xếp hạng trung bình <strong>5/5</strong> từ 24 đánh giá trên SpigotMC, đây là những gì người dùng nói:",
+        reviews_feedback: "Bạn đã thử MyPortalsCommands chưa? Chia sẻ phản hồi của bạn trên <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> và giúp cộng đồng của chúng tôi phát triển!",
+        footer_copyright: "&copy; 2025 OkiTask. Mọi quyền được bảo lưu.",
+        footer_follow: "Theo dõi tôi trên",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Tham gia Discord"
+      },
+      es: {
+        title: "Documentación de MyPortalsCommands",
+        header: "Plugins OkiTask",
+        nav_home: "Inicio",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Crea portales que ejecutan comandos personalizados para mejorar la experiencia de tu servidor de Minecraft. Mensajes completamente configurables y compatible con las versiones de Minecraft de 1.9 a 1.21.8.",
+        rating: "<strong>Calificación:</strong> 5/5 (24 valoraciones)",
+        downloads: "<strong>Descargas:</strong> 6,610",
+        updated: "<strong>Actualizado:</strong> 27 de Julio de 2025",
+        tutorial_title: "Tutorial",
+        tutorial_desc: "Mira el video tutorial de <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> para la versión 3.6.2:",
+        installation_title: "Instalación",
+        installation_steps: [
+          "Descarga la última versión desde <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>.",
+          "Coloca el archivo <code>MyPortalsCommands.jar</code> en la carpeta <code>plugins</code> de tu servidor.",
+          "Reinicia el servidor para cargar el plugin.",
+          "Configura el plugin en <code>plugins/MyPortalsCommands/config.yml</code>."
+        ],
+        commands_title: "Comandos",
+        commands_alias: "Alias: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Abre la interfaz gráfica.",
+          "<code>/myportalscommands reload</code> - Recarga la configuración del plugin.",
+          "<code>/myportalscommands wand</code> - Obtiene la varita de selección de portales.",
+          "<code>/myportalscommands setpos1</code> - Establece la primera posición del portal.",
+          "<code>/myportalscommands setpos2</code> - Establece la segunda posición del portal."
+        ],
+        commands_permission: "<strong>Permiso:</strong> <code>myportalscommands.admin</code> - Otorga acceso a todos los comandos de administración.",
+        config_title: "Configuración",
+        config_desc: "Edita el archivo de configuración ubicado en <code>plugins/MyPortalsCommands/config.yml</code>. A continuación, un ejemplo de configuración con soporte para plugins de combate:",
+        config_combat_desc: "Todos los mensajes son configurables en la sección <code>messages</code> del archivo de configuración. La sección <code>combat</code> permite la integración con plugins de combate:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Impide el uso de portales cuando un jugador está en combate, si está habilitado.",
+          "<code>plugins</code> - Lista los plugins de combate compatibles (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>) que el plugin verifica para el estado de combate."
+        ],
+        support_title: "Soporte",
+        support_desc: "¿Encontraste un error o necesitas ayuda? Únete a nuestro servidor de Discord para soporte rápido y excelente: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Únete a Discord</a>.",
+        support_note: "Por favor, no reportes errores en las reseñas de SpigotMC. Usa el servidor de Discord para reportes de errores y solicitudes de soporte.",
+        tos_title: "Términos de Servicio",
+        tos_list: [
+          "No puedes vender este plugin.",
+          "No puedes descompilarlo.",
+          "No puedes usar partes del código del plugin.",
+          "No puedes reclamar este plugin como propio."
+        ],
+        reviews_title: "Reseñas",
+        reviews_desc: "¡Nuestra comunidad ama MyPortalsCommands! Con una calificación promedio de <strong>5/5</strong> de 24 reseñas en SpigotMC, esto es lo que dicen los usuarios:",
+        reviews_feedback: "¿Has probado MyPortalsCommands? Comparte tus comentarios en <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> y ayuda a nuestra comunidad a crecer!",
+        footer_copyright: "&copy; 2025 OkiTask. Todos los derechos reservados.",
+        footer_follow: "Sígueme en",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Únete a Discord"
+      },
+      fr: {
+        title: "Documentation MyPortalsCommands",
+        header: "Plugins OkiTask",
+        nav_home: "Accueil",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Créez des portails qui exécutent des commandes personnalisées pour améliorer l'expérience de votre serveur Minecraft. Messages entièrement configurables et compatible avec les versions de Minecraft de 1.9 à 1.21.8.",
+        rating: "<strong>Note :</strong> 5/5 (24 évaluations)",
+        downloads: "<strong>Téléchargements :</strong> 6 610",
+        updated: "<strong>Mis à jour :</strong> 27 juillet 2025",
+        tutorial_title: "Tutoriel",
+        tutorial_desc: "Regardez la vidéo tutorielle de <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> pour la version 3.6.2 :",
+        installation_title: "Installation",
+        installation_steps: [
+          "Téléchargez la dernière version sur <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>.",
+          "Placez le fichier <code>MyPortalsCommands.jar</code> dans le dossier <code>plugins</code> de votre serveur.",
+          "Redémarrez votre serveur pour charger le plugin.",
+          "Configurez le plugin dans <code>plugins/MyPortalsCommands/config.yml</code>."
+        ],
+        commands_title: "Commandes",
+        commands_alias: "Alias : <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Ouvre l'interface graphique.",
+          "<code>/myportalscommands reload</code> - Recharge la configuration du plugin.",
+          "<code>/myportalscommands wand</code> - Obtient la baguette de sélection de portail.",
+          "<code>/myportalscommands setpos1</code> - Définit la première position du portail.",
+          "<code>/myportalscommands setpos2</code> - Définit la deuxième position du portail."
+        ],
+        commands_permission: "<strong>Permission :</strong> <code>myportalscommands.admin</code> - Donne accès à toutes les commandes administratives.",
+        config_title: "Configuration",
+        config_desc: "Modifiez le fichier de configuration situé dans <code>plugins/MyPortalsCommands/config.yml</code>. Voici un exemple de configuration avec prise en charge des plugins de combat :",
+        config_combat_desc: "Tous les messages sont configurables dans la section <code>messages</code> du fichier de configuration. La section <code>combat</code> permet l'intégration avec les plugins de combat :",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Empêche l'utilisation des portails lorsqu'un joueur est en combat, si activé.",
+          "<code>plugins</code> - Liste les plugins de combat pris en charge (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>) que le plugin vérifie pour l'état de combat."
+        ],
+        support_title: "Support",
+        support_desc: "Vous avez trouvé un bug ou besoin d'aide ? Rejoignez notre serveur Discord pour un support rapide et excellent : <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Rejoindre Discord</a>.",
+        support_note: "Veuillez ne pas signaler les bugs dans les avis SpigotMC. Utilisez le serveur Discord pour les rapports de bugs et les demandes de support.",
+        tos_title: "Conditions de Service",
+        tos_list: [
+          "Vous ne pouvez pas vendre ce plugin.",
+          "Vous ne pouvez pas le décompiler.",
+          "Vous ne pouvez pas utiliser des parties du code du plugin.",
+          "Vous ne pouvez pas revendiquer ce plugin comme le vôtre."
+        ],
+        reviews_title: "Avis",
+        reviews_desc: "Notre communauté adore MyPortalsCommands ! Avec une note moyenne de <strong>5/5</strong> sur 24 avis sur SpigotMC, voici ce que disent les utilisateurs :",
+        reviews_feedback: "Avez-vous essayé MyPortalsCommands ? Partagez vos commentaires sur <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> et aidez notre communauté à grandir !",
+        footer_copyright: "&copy; 2025 OkiTask. Tous droits réservés.",
+        footer_follow: "Suivez-moi sur",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Rejoindre Discord"
+      },
+      hu: {
+        title: "MyPortalsCommands Dokumentáció",
+        header: "OkiTask Bővítmények",
+        nav_home: "Kezdőlap",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Hozz létre portálokat, amelyek egyedi parancsokat hajtanak végre, hogy javítsd a Minecraft szervered élményét. Teljesen testreszabható üzenetek és kompatibilis a Minecraft 1.9-től 1.21.8-ig terjedő verzióival.",
+        rating: "<strong>Értékelés:</strong> 5/5 (24 értékelés)",
+        downloads: "<strong>Letöltések:</strong> 6 610",
+        updated: "<strong>Frissítve:</strong> 2025. július 27.",
+        tutorial_title: "Oktatóanyag",
+        tutorial_desc: "Nézd meg a <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> által készített oktatóvideót a 3.6.2-es verzióhoz:",
+        installation_title: "Telepítés",
+        installation_steps: [
+          "Töltsd le a legújabb verziót a <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>-ről.",
+          "Helyezd a <code>MyPortalsCommands.jar</code> fájlt a szervered <code>plugins</code> mappájába.",
+          "Indítsd újra a szervert a bővítmény betöltéséhez.",
+          "Állítsd be a bővítményt a <code>plugins/MyPortalsCommands/config.yml</code> fájlban."
+        ],
+        commands_title: "Parancsok",
+        commands_alias: "Alias: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Megnyitja a grafikus felületet.",
+          "<code>/myportalscommands reload</code> - Újratölti a bővítmény konfigurációját.",
+          "<code>/myportalscommands wand</code> - Megszerzi a portál kiválasztó pálcát.",
+          "<code>/myportalscommands setpos1</code> - Beállítja a portál első pozícióját.",
+          "<code>/myportalscommands setpos2</code> - Beállítja a portál második pozícióját."
+        ],
+        commands_permission: "<strong>Engedély:</strong> <code>myportalscommands.admin</code> - Hozzáférést biztosít minden admin parancshoz.",
+        config_title: "Konfiguráció",
+        config_desc: "Szerkeszd a konfigurációs fájlt a <code>plugins/MyPortalsCommands/config.yml</code> helyen. Az alábbiakban egy példa konfiguráció található harci bővítmények támogatásával:",
+        config_combat_desc: "Minden üzenet testreszabható a konfigurációs fájl <code>messages</code> szakaszában. A <code>combat</code> szakasz lehetővé teszi a harci bővítményekkel való integrációt:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Megakadályozza a portál használatát, ha egy játékos harcban van, ha engedélyezve van.",
+          "<code>plugins</code> - Felsorolja a támogatott harci bővítményeket (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>), amelyeket a bővítmény a harci állapot ellenőrzésére használ."
+        ],
+        support_title: "Támogatás",
+        support_desc: "Találtál hibát vagy segítségre van szükséged? Csatlakozz Discord szerverünkhöz gyors és kiváló támogatásért: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Csatlakozz a Discordhoz</a>.",
+        support_note: "Kérjük, ne jelents hibákat a SpigotMC értékelésekben. Használd a Discord szervert hibajelentésekhez és támogatási kérésekhez.",
+        tos_title: "Szolgáltatási Feltételek",
+        tos_list: [
+          "Nem adhatod el ezt a bővítményt.",
+          "Nem fordíthatod vissza.",
+          "Nem használhatod fel a bővítmény kódjának részeit.",
+          "Nem állíthatod, hogy ez a bővítmény a tied."
+        ],
+        reviews_title: "Értékelések",
+        reviews_desc: "Közösségünk imádja a MyPortalsCommands-t! Átlagosan <strong>5/5</strong> értékeléssel 24 értékelés alapján a SpigotMC-n, itt vannak a felhasználók véleményei:",
+        reviews_feedback: "Kipróbáltad a MyPortalsCommands-t? Oszd meg visszajelzésedet a <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>-n, és segítsd közösségünk növekedését!",
+        footer_copyright: "&copy; 2025 OkiTask. Minden jog fenntartva.",
+        footer_follow: "Kövesd engem",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Csatlakozz a Discordhoz"
+      },
+      tr: {
+        title: "MyPortalsCommands Dokümantasyonu",
+        header: "OkiTask Eklentileri",
+        nav_home: "Ana Sayfa",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Minecraft sunucu deneyiminizi geliştirmek için özel komutlar çalıştıran portallar oluşturun. Tamamen özelleştirilebilir mesajlar ve Minecraft 1.9'dan 1.21.8'e kadar olan sürümlerle uyumludur.",
+        rating: "<strong>Derecelendirme:</strong> 5/5 (24 değerlendirme)",
+        downloads: "<strong>İndirmeler:</strong> 6.610",
+        updated: "<strong>Güncellenme:</strong> 27 Temmuz 2025",
+        tutorial_title: "Eğitim",
+        tutorial_desc: "<a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> tarafından hazırlanan 3.6.2 sürümü için eğitim videosunu izleyin:",
+        installation_title: "Kurulum",
+        installation_steps: [
+          "En son sürümü <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>'den indirin.",
+          "<code>MyPortalsCommands.jar</code> dosyasını sunucunuzun <code>plugins</code> klasörüne yerleştirin.",
+          "Eklentiyi yüklemek için sunucuyu yeniden başlatın.",
+          "Eklentiyi <code>plugins/MyPortalsCommands/config.yml</code> dosyasında yapılandırın."
+        ],
+        commands_title: "Komutlar",
+        commands_alias: "Takma ad: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Arayüzü açar.",
+          "<code>/myportalscommands reload</code> - Eklenti yapılandırmasını yeniden yükler.",
+          "<code>/myportalscommands wand</code> - Portal seçim çubuğunu alır.",
+          "<code>/myportalscommands setpos1</code> - Portalın ilk pozisyonunu ayarlar.",
+          "<code>/myportalscommands setpos2</code> - Portalın ikinci pozisyonunu ayarlar."
+        ],
+        commands_permission: "<strong>İzin:</strong> <code>myportalscommands.admin</code> - Tüm yönetici komutlarına erişim sağlar.",
+        config_title: "Yapılandırma",
+        config_desc: "<code>plugins/MyPortalsCommands/config.yml</code> adresindeki yapılandırma dosyasını düzenleyin. Aşağıda savaş eklentileri desteği ile bir yapılandırma örneği verilmiştir:",
+        config_combat_desc: "Tüm mesajlar, yapılandırma dosyasının <code>messages</code> bölümünde özelleştirilebilir. <code>combat</code> bölümü, savaş eklentileriyle entegrasyona olanak tanır:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Etkinleştirildiğinde, bir oyuncu savaşta olduğunda portal kullanımını engeller.",
+          "<code>plugins</code> - Eklentinin savaş durumu için kontrol ettiği desteklenen savaş eklentilerini listeler (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>)."
+        ],
+        support_title: "Destek",
+        support_desc: "Bir hata mı buldunuz veya yardıma mı ihtiyacınız var? Hızlı ve mükemmel destek için Discord sunucumuza katılın: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Discord'a Katıl</a>.",
+        support_note: "Lütfen hataları SpigotMC incelemelerinde bildirmeyin. Hata raporları ve destek talepleri için Discord sunucusunu kullanın.",
+        tos_title: "Hizmet Şartları",
+        tos_list: [
+          "Bu eklentiyi satamazsınız.",
+          "Tersine mühendislik yapamazsınız.",
+          "Eklenti kodunun parçalarını kullanamazsınız.",
+          "Bu eklentiyi kendinize aitmiş gibi iddia edemezsiniz."
+        ],
+        reviews_title: "İncelemeler",
+        reviews_desc: "Topluluğumuz MyPortalsCommands'ı seviyor! SpigotMC'de 24 incelemeden ortalama <strong>5/5</strong> derecelendirme ile, kullanıcıların söyledikleri şunlar:",
+        reviews_feedback: "MyPortalsCommands'ı denediniz mi? Geri bildiriminizi <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>'de paylaşın ve topluluğumuzun büyümesine yardımcı olun!",
+        footer_copyright: "&copy; 2025 OkiTask. Tüm hakları saklıdır.",
+        footer_follow: "Beni takip et",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Discord'a Katıl"
+      },
+      pt: {
+        title: "Documentação do MyPortalsCommands",
+        header: "Plugins OkiTask",
+        nav_home: "Início",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Crie portais que executam comandos personalizados para melhorar a experiência do seu servidor Minecraft. Mensagens totalmente configuráveis e compatível com as versões do Minecraft de 1.9 a 1.21.8.",
+        rating: "<strong>Classificação:</strong> 5/5 (24 avaliações)",
+        downloads: "<strong>Downloads:</strong> 6.610",
+        updated: "<strong>Atualizado:</strong> 27 de Julho de 2025",
+        tutorial_title: "Tutorial",
+        tutorial_desc: "Assista ao vídeo tutorial de <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> para a versão 3.6.2:",
+        installation_title: "Instalação",
+        installation_steps: [
+          "Baixe a versão mais recente do <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>.",
+          "Coloque o arquivo <code>MyPortalsCommands.jar</code> na pasta <code>plugins</code> do seu servidor.",
+          "Reinicie o servidor para carregar o plugin.",
+          "Configure o plugin em <code>plugins/MyPortalsCommands/config.yml</code>."
+        ],
+        commands_title: "Comandos",
+        commands_alias: "Alias: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Abre a interface gráfica.",
+          "<code>/myportalscommands reload</code> - Recarrega a configuração do plugin.",
+          "<code>/myportalscommands wand</code> - Obtém a varinha de seleção de portais.",
+          "<code>/myportalscommands setpos1</code> - Define a primeira posição do portal.",
+          "<code>/myportalscommands setpos2</code> - Define a segunda posição do portal."
+        ],
+        commands_permission: "<strong>Permissão:</strong> <code>myportalscommands.admin</code> - Concede acesso a todos os comandos administrativos.",
+        config_title: "Configuração",
+        config_desc: "Edite o arquivo de configuração localizado em <code>plugins/MyPortalsCommands/config.yml</code>. Abaixo está um exemplo de configuração com suporte a plugins de combate:",
+        config_combat_desc: "Todas as mensagens são configuráveis na seção <code>messages</code> do arquivo de configuração. A seção <code>combat</code> permite integração com plugins de combate:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Impede o uso de portais quando um jogador está em combate, se ativado.",
+          "<code>plugins</code> - Lista os plugins de combate suportados (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>) que o plugin verifica para o estado de combate."
+        ],
+        support_title: "Suporte",
+        support_desc: "Encontrou um bug ou precisa de ajuda? Junte-se ao nosso servidor Discord para suporte rápido e excelente: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Juntar-se ao Discord</a>.",
+        support_note: "Por favor, não reporte bugs nas avaliações do SpigotMC. Use o servidor Discord para relatórios de bugs e solicitações de suporte.",
+        tos_title: "Termos de Serviço",
+        tos_list: [
+          "Você não pode vender este plugin.",
+          "Você não pode descompilá-lo.",
+          "Você não pode usar partes do código do plugin.",
+          "Você não pode reivindicar este plugin como seu."
+        ],
+        reviews_title: "Avaliações",
+        reviews_desc: "Nossa comunidade ama o MyPortalsCommands! Com uma classificação média de <strong>5/5</strong> de 24 avaliações no SpigotMC, aqui está o que os usuários dizem:",
+        reviews_feedback: "Você experimentou o MyPortalsCommands? Compartilhe seu feedback no <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> e ajude nossa comunidade a crescer!",
+        footer_copyright: "&copy; 2025 OkiTask. Todos os direitos reservados.",
+        footer_follow: "Siga-me em",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Juntar-se ao Discord"
+      },
+      cs: {
+        title: "Dokumentace MyPortalsCommands",
+        header: "Pluginy OkiTask",
+        nav_home: "Domů",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Vytvořte portály, které spouštějí vlastní příkazy pro zlepšení zážitku z vašeho serveru Minecraft. Plně přizpůsobitelné zprávy a kompatibilní s verzemi Minecraftu od 1.9 do 1.21.8.",
+        rating: "<strong>Hodnocení:</strong> 5/5 (24 hodnocení)",
+        downloads: "<strong>Stažení:</strong> 6 610",
+        updated: "<strong>Aktualizováno:</strong> 27. července 2025",
+        tutorial_title: "Návod",
+        tutorial_desc: "Podívejte se na tutoriálové video od <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> pro verzi 3.6.2:",
+        installation_title: "Instalace",
+        installation_steps: [
+          "Stáhněte si nejnovější verzi z <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>.",
+          "Umístěte soubor <code>MyPortalsCommands.jar</code> do složky <code>plugins</code> vašeho serveru.",
+          "Restartujte server, aby se plugin načetl.",
+          "Nakonfigurujte plugin v souboru <code>plugins/MyPortalsCommands/config.yml</code>."
+        ],
+        commands_title: "Příkazy",
+        commands_alias: "Alias: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Otevře grafické rozhraní.",
+          "<code>/myportalscommands reload</code> - Znovu načte konfiguraci pluginu.",
+          "<code>/myportalscommands wand</code> - Získá hůlku pro výběr portálu.",
+          "<code>/myportalscommands setpos1</code> - Nastaví první pozici portálu.",
+          "<code>/myportalscommands setpos2</code> - Nastaví druhou pozici portálu."
+        ],
+        commands_permission: "<strong>Oprávnění:</strong> <code>myportalscommands.admin</code> - Umožňuje přístup ke všem administrátorským příkazům.",
+        config_title: "Konfigurace",
+        config_desc: "Upravte konfigurační soubor umístěný v <code>plugins/MyPortalsCommands/config.yml</code>. Níže je příklad konfigurace s podporou bojových pluginů:",
+        config_combat_desc: "Všechny zprávy lze přizpůsobit v sekci <code>messages</code> konfiguračního souboru. Sekce <code>combat</code> umožňuje integraci s bojovými pluginy:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Zabraňuje použití portálů, když je hráč v boji, pokud je povoleno.",
+          "<code>plugins</code> - Uvádí podporované bojové pluginy (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>), které plugin kontroluje pro stav boje."
+        ],
+        support_title: "Podpora",
+        support_desc: "Našli jste chybu nebo potřebujete pomoc? Připojte se k našemu serveru Discord pro rychlou a vynikající podporu: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Připojit se k Discordu</a>.",
+        support_note: "Prosím, nehlaste chyby v recenzích na SpigotMC. Použijte server Discord pro hlášení chyb a žádosti o podporu.",
+        tos_title: "Podmínky služby",
+        tos_list: [
+          "Tento plugin nesmíte prodávat.",
+          "Nesmíte jej dekompilovat.",
+          "Nesmíte používat části kódu pluginu.",
+          "Nesmíte si tento plugin přivlastnit."
+        ],
+        reviews_title: "Recenze",
+        reviews_desc: "Naše komunita miluje MyPortalsCommands! S průměrným hodnocením <strong>5/5</strong> z 24 recenzí na SpigotMC, tady je, co říkají uživatelé:",
+        reviews_feedback: "Vyzkoušeli jste MyPortalsCommands? Sdílejte svůj názor na <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> a pomozte naší komunitě růst!",
+        footer_copyright: "&copy; 2025 OkiTask. Všechna práva vyhrazena.",
+        footer_follow: "Sledujte mě na",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Připojit se k Discordu"
+      },
+      pl: {
+        title: "Dokumentacja MyPortalsCommands",
+        header: "Wtyczki OkiTask",
+        nav_home: "Strona główna",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Twórz portale wykonujące niestandardowe polecenia, aby ulepszyć doświadczenie na swoim serwerze Minecraft. W pełni konfigurowalne wiadomości i kompatybilność z wersjami Minecraft od 1.9 do 1.21.8.",
+        rating: "<strong>Ocena:</strong> 5/5 (24 oceny)",
+        downloads: "<strong>Pobrania:</strong> 6 610",
+        updated: "<strong>Zaktualizowano:</strong> 27 lipca 2025",
+        tutorial_title: "Samouczek",
+        tutorial_desc: "Obejrzyj film instruktażowy od <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> dla wersji 3.6.2:",
+        installation_title: "Instalacja",
+        installation_steps: [
+          "Pobierz najnowszą wersję z <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>.",
+          "Umieść plik <code>MyPortalsCommands.jar</code> w folderze <code>plugins</code> swojego serwera.",
+          "Uruchom ponownie serwer, aby załadować wtyczkę.",
+          "Skonfiguruj wtyczkę w pliku <code>plugins/MyPortalsCommands/config.yml</code>."
+        ],
+        commands_title: "Polecenia",
+        commands_alias: "Alias: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Otwiera interfejs graficzny.",
+          "<code>/myportalscommands reload</code> - Przeładowuje konfigurację wtyczki.",
+          "<code>/myportalscommands wand</code> - Uzyskuje różdżkę do wyboru portalu.",
+          "<code>/myportalscommands setpos1</code> - Ustawia pierwszą pozycję portalu.",
+          "<code>/myportalscommands setpos2</code> - Ustawia drugą pozycję portalu."
+        ],
+        commands_permission: "<strong>Uprawnienie:</strong> <code>myportalscommands.admin</code> - Umożliwia dostęp do wszystkich poleceń administracyjnych.",
+        config_title: "Konfiguracja",
+        config_desc: "Edytuj plik konfiguracyjny znajdujący się w <code>plugins/MyPortalsCommands/config.yml</code>. Poniżej znajduje się przykład konfiguracji z obsługą wtyczek walki:",
+        config_combat_desc: "Wszystkie wiadomości można dostosować w sekcji <code>messages</code> pliku konfiguracyjnego. Sekcja <code>combat</code> umożliwia integrację z wtyczkami walki:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Zapobiega używaniu portali, gdy gracz jest w walce, jeśli włączone.",
+          "<code>plugins</code> - Wymienia obsługiwane wtyczki walki (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>), które wtyczka sprawdza pod kątem stanu walki."
+        ],
+        support_title: "Wsparcie",
+        support_desc: "Znalazłeś błąd lub potrzebujesz pomocy? Dołącz do naszego serwera Discord, aby uzyskać szybkie i doskonałe wsparcie: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Dołącz do Discorda</a>.",
+        support_note: "Proszę, nie zgłaszaj błędów w recenzjach SpigotMC. Używaj serwera Discord do zgłaszania błędów i próśb o wsparcie.",
+        tos_title: "Warunki Usługi",
+        tos_list: [
+          "Nie możesz sprzedawać tej wtyczki.",
+          "Nie możesz jej dekompilować.",
+          "Nie możesz używać fragmentów kodu wtyczki.",
+          "Nie możesz twierdzić, że ta wtyczka jest twoja."
+        ],
+        reviews_title: "Recenzje",
+        reviews_desc: "Nasza społeczność uwielbia MyPortalsCommands! Z średnią oceną <strong>5/5</strong> z 24 recenzji na SpigotMC, oto co mówią użytkownicy:",
+        reviews_feedback: "Czy wypróbowałeś MyPortalsCommands? Podziel się swoją opinią na <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> i pomóż naszej społeczności się rozwijać!",
+        footer_copyright: "&copy; 2025 OkiTask. Wszystkie prawa zastrzeżone.",
+        footer_follow: "Śledź mnie na",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Dołącz do Discorda"
+      },
+      ru: {
+        title: "Документация MyPortalsCommands",
+        header: "Плагины OkiTask",
+        nav_home: "Главная",
+        nav_myportalscommands: "MyPortalsCommands",
+        nav_myredeemplus: "MyRedeemPlus",
+        section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+        section_desc: "Создавайте порталы, которые выполняют пользовательские команды для улучшения опыта вашего сервера Minecraft. Полностью настраиваемые сообщения и совместимость с версиями Minecraft от 1.9 до 1.21.8.",
+        rating: "<strong>Рейтинг:</strong> 5/5 (24 оценки)",
+        downloads: "<strong>Загрузки:</strong> 6 610",
+        updated: "<strong>Обновлено:</strong> 27 июля 2025",
+        tutorial_title: "Руководство",
+        tutorial_desc: "Посмотрите обучающее видео от <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> для версии 3.6.2:",
+        installation_title: "Установка",
+        installation_steps: [
+          "Скачайте последнюю версию с <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>.",
+          "Поместите файл <code>MyPortalsCommands.jar</code> в папку <code>plugins</code> вашего сервера.",
+          "Перезапустите сервер, чтобы загрузить плагин.",
+          "Настройте плагин в файле <code>plugins/MyPortalsCommands/config.yml</code>."
+        ],
+        commands_title: "Команды",
+        commands_alias: "Псевдоним: <code>/mypc</code>",
+        commands_list: [
+          "<code>/myportalscommands</code> - Открывает графический интерфейс.",
+          "<code>/myportalscommands reload</code> - Перезагружает конфигурацию плагина.",
+          "<code>/myportalscommands wand</code> - Получает жезл выбора портала.",
+          "<code>/myportalscommands setpos1</code> - Устанавливает первую позицию портала.",
+          "<code>/myportalscommands setpos2</code> - Устанавливает вторую позицию портала."
+        ],
+        commands_permission: "<strong>Разрешение:</strong> <code>myportalscommands.admin</code> - Дает доступ ко всем административным командам.",
+        config_title: "Конфигурация",
+        config_desc: "Отредактируйте файл конфигурации, расположенный в <code>plugins/MyPortalsCommands/config.yml</code>. Ниже приведен пример конфигурации с поддержкой боевых плагинов:",
+        config_combat_desc: "Все сообщения настраиваются в разделе <code>messages</code> файла конфигурации. Раздел <code>combat</code> позволяет интегрироваться с боевыми плагинами:",
+        config_combat_list: [
+          "<code>block_during_combat: true</code> - Запрещает использование порталов, когда игрок находится в бою, если включено.",
+          "<code>plugins</code> - Список поддерживаемых боевых плагинов (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>), которые плагин проверяет на статус боя."
+        ],
+        support_title: "Поддержка",
+        support_desc: "Нашли ошибку или нужна помощь? Присоединяйтесь к нашему серверу Discord для быстрой и качественной поддержки: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Присоединиться к Discord</a>.",
+        support_note: "Пожалуйста, не сообщайте об ошибках в отзывах на SpigotMC. Используйте сервер Discord для сообщений об ошибках и запросов поддержки.",
+        tos_title: "Условия использования",
+        tos_list: [
+          "Вы не можете продавать этот плагин.",
+          "Вы не можете его декомпилировать.",
+          "Вы не можете использовать части кода плагина.",
+          "Вы не можете присваивать этот плагин себе."
+        ],
+        reviews_title: "Отзывы",
+        reviews_desc: "Наше сообщество любит MyPortalsCommands! Со средним рейтингом <strong>5/5</strong> по 24 отзывам на SpigotMC, вот что говорят пользователи:",
+        reviews_feedback: "Пробовали MyPortalsCommands? Поделитесь своим отзывом на <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> и помогите нашему сообществу расти!",
+        footer_copyright: "&copy; 2025 OkiTask. Все права защищены.",
+        footer_follow: "Следите за мной в",
+        footer_spigotmc: "SpigotMC",
+        footer_builtbybit: "BuiltByBit",
+        footer_discord: "Присоединиться к Discord"
+      },
+      uk: {
+  title: "Документація MyPortalsCommands",
+  header: "Плагіни OkiTask",
+  nav_home: "Головна",
+  nav_myportalscommands: "MyPortalsCommands",
+  nav_myredeemplus: "MyRedeemPlus",
+  section_title: "MyPortalsCommands [1.9 - 1.21.8] v3.6.2",
+  section_desc: "Створюйте портали, які виконують власні команди для покращення роботи вашого сервера Minecraft. Повністю налаштовувані повідомлення та сумісність із версіями Minecraft від 1.9 до 1.21.8.",
+  rating: "<strong>Рейтинг:</strong> 5/5 (24 оцінки)",
+  downloads: "<strong>Завантаження:</strong> 6 610",
+  updated: "<strong>Оновлено:</strong> 27 липня 2025",
+  tutorial_title: "Посібник",
+  tutorial_desc: "Перегляньте навчальне відео від <a href='https://www.youtube.com/@freddaws' target='_blank' class='text-blue-400 hover:underline'>Freddaws</a> для версії 3.6.2:",
+  installation_title: "Встановлення",
+  installation_steps: [
+    "Завантажте останню версію з <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a>.",
+    "Помістіть файл <code>MyPortalsCommands.jar</code> у папку <code>plugins</code> вашого сервера.",
+    "Перезавантажте сервер, щоб завантажити плагін.",
+    "Налаштуйте плагін у файлі <code>plugins/MyPortalsCommands/config.yml</code>."
+  ],
+  commands_title: "Команди",
+  commands_alias: "Псевдонім: <code>/mypc</code>",
+  commands_list: [
+    "<code>/myportalscommands</code> - Відкриває графічний інтерфейс.",
+    "<code>/myportalscommands reload</code> - Перезавантажує конфігурацію плагіна.",
+    "<code>/myportalscommands wand</code> - Отримує жезл вибору порталу.",
+    "<code>/myportalscommands setpos1</code> - Встановлює першу позицію порталу.",
+    "<code>/myportalscommands setpos2</code> - Встановлює другу позицію порталу."
+  ],
+  commands_permission: "<strong>Дозвіл:</strong> <code>myportalscommands.admin</code> - Надає доступ до всіх адміністративних команд.",
+  config_title: "Конфігурація",
+  config_desc: "Відредагуйте файл конфігурації, розташований у <code>plugins/MyPortalsCommands/config.yml</code>. Нижче наведено приклад конфігурації з підтримкою бойових плагінів:",
+  config_combat_desc: "Усі повідомлення налаштовуються в розділі <code>messages</code> файлу конфігурації. Розділ <code>combat</code> дозволяє інтегруватися з бойовими плагінами:",
+  config_combat_list: [
+    "<code>block_during_combat: true</code> - Забороняє використання порталів, коли гравець перебуває в бою, якщо увімкнено.",
+    "<code>plugins</code> - Список підтримуваних бойових плагінів (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>), які плагін перевіряє на статус бою."
+  ],
+  support_title: "Підтримка",
+  support_desc: "Знайшли помилку чи потрібна допомога? Приєднуйтесь до нашого сервера Discord для швидкої та якісної підтримки: <a href='https://discord.gg/yAEj4hvutT' target='_blank' class='text-blue-400 hover:underline'>Приєднатися до Discord</a>.",
+  support_note: "Будь ласка, не повідомляйте про помилки в відгуках на SpigotMC. Використовуйте сервер Discord для повідомлень про помилки та запитів підтримки.",
+  tos_title: "Умови використання",
+  tos_list: [
+    "Ви не можете продавати цей плагін.",
+    "Ви не можете його декомпілювати.",
+    "Ви не можете використовувати частини коду плагіна.",
+    "Ви не можете привласнювати цей плагін собі."
+  ],
+  reviews_title: "Відгуки",
+  reviews_desc: "Наша спільнота любить MyPortalsCommands! Зі середнім рейтингом <strong>5/5</strong> за 24 відгуками на SpigotMC, ось що кажуть користувачі:",
+  reviews_feedback: "Спробували MyPortalsCommands? Поділіться своїм відгуком на <a href='https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews' target='_blank' class='text-blue-400 hover:underline'>SpigotMC</a> і допоможіть нашій спільноті зростати!",
+  footer_copyright: "&copy; 2025 OkiTask. Усі права захищені.",
+  footer_follow: "Слідкуйте за мною в",
+  footer_spigotmc: "SpigotMC",
+  footer_builtbybit: "BuiltByBit",
+  footer_discord: "Приєднатися до Discord"
+}}
+
+    // Language options with local flag paths
+    const languageOptions = [
+      { code: 'en', name: 'English', flag: 'flags/gb.png' },
+      { code: 'it', name: 'Italiano', flag: 'flags/it.png' },
+      { code: 'ro', name: 'Română', flag: 'flags/ro.png' },
+      { code: 'de', name: 'Deutsch', flag: 'flags/de.png' },
+      { code: 'vi', name: 'Tiếng Việt', flag: 'flags/vn.png' },
+      { code: 'es', name: 'Español', flag: 'flags/es.png' },
+      { code: 'fr', name: 'Français', flag: 'flags/fr.png' },
+      { code: 'hu', name: 'Magyar', flag: 'flags/hu.png' },
+      { code: 'tr', name: 'Türkçe', flag: 'flags/tr.png' },
+      { code: 'pt', name: 'Português', flag: 'flags/pt.png' },
+      { code: 'cs', name: 'Čeština', flag: 'flags/cz.png' },
+      { code: 'pl', name: 'Polski', flag: 'flags/pl.png' },
+      { code: 'ru', name: 'Русский', flag: 'flags/ru.png' },
+      { code: 'uk', name: 'Українська', flag: 'flags/ua.png' }
+    ];
+
+    // Language handling logic
+    let currentLanguage = 'en';
+
+    function updateContent(language) {
+  // Fallback to 'en' if the language is not found or invalid
+  if (!translations[language]) {
+    console.warn(`Language "${language}" not found, falling back to English.`);
+    language = 'en';
+  }
+
+  const t = translations[language];
+  
+  // Ensure DOM elements exist before updating to prevent null reference errors
+  const updateElement = (selector, content) => {
+    const element = document.querySelector(selector);
+    if (element) {
+      element.innerHTML = content;
+    } else {
+      console.warn(`Element with selector "${selector}" not found.`);
+    }
+  };
+
+  document.title = t.title || "MyPortalsCommands Documentation";
+  updateElement('h1', t.header);
+  updateElement('#nav-home', t.nav_home);
+  updateElement('#nav-myportalscommands', t.nav_myportalscommands);
+  updateElement('#nav-myredeemplus', t.nav_myredeemplus);
+  updateElement('#section-title', t.section_title);
+  updateElement('#section-desc', t.section_desc);
+  updateElement('#rating', t.rating);
+  updateElement('#downloads', t.downloads);
+  updateElement('#updated', t.updated);
+  updateElement('#tutorial-title', t.tutorial_title);
+  updateElement('#tutorial-desc', t.tutorial_desc);
+  updateElement('#installation-title', t.installation_title);
+
+  const installationList = document.querySelector('#installation-steps');
+  if (installationList) {
+    installationList.innerHTML = t.installation_steps.map(step => `<li>${step}</li>`).join('');
+  }
+
+  updateElement('#commands-title', t.commands_title);
+  updateElement('#commands-alias', t.commands_alias);
+
+  const commandsList = document.querySelector('#commands-list');
+  if (commandsList) {
+    commandsList.innerHTML = t.commands_list.map(command => `<li>${command}</li>`).join('');
+  }
+
+  updateElement('#commands-permission', t.commands_permission);
+  updateElement('#config-title', t.config_title);
+  updateElement('#config-desc', t.config_desc);
+  updateElement('#config-combat-desc', t.config_combat_desc);
+
+  const configCombatList = document.querySelector('#config-combat-list');
+  if (configCombatList) {
+    configCombatList.innerHTML = t.config_combat_list.map(item => `<li>${item}</li>`).join('');
+  }
+
+  updateElement('#support-title', t.support_title);
+  updateElement('#support-desc', t.support_desc);
+  updateElement('#support-note', t.support_note);
+  updateElement('#tos-title', t.tos_title);
+
+  const tosList = document.querySelector('#tos-list');
+  if (tosList) {
+    tosList.innerHTML = t.tos_list.map(item => `<li>${item}</li>`).join('');
+  }
+
+  updateElement('#reviews-title', t.reviews_title);
+  updateElement('#reviews-desc', t.reviews_desc);
+  updateElement('#reviews-feedback', t.reviews_feedback);
+  updateElement('#footer-copyright', t.footer_copyright);
+  updateElement('#footer-follow', t.footer_follow);
+  updateElement('#footer-spigotmc', t.footer_spigotmc);
+  updateElement('#footer-builtbybit', t.footer_builtbybit);
+  updateElement('#footer-discord', t.footer_discord);
+
+  // Update language selector with flag and name
+  const languageSelector = document.querySelector('.language-selector');
+  if (languageSelector) {
+    const selectedLang = languageOptions.find(opt => opt.code === language) || languageOptions[0];
+    const flagImg = languageSelector.querySelector('img');
+    const languageSpan = languageSelector.querySelector('span');
+    if (flagImg && languageSpan) {
+      flagImg.src = selectedLang.flag;
+      flagImg.alt = `${selectedLang.name} flag`;
+      languageSpan.textContent = selectedLang.name;
+    } else {
+      console.warn('Flag image or language span not found in language selector.');
+    }
+  }
+}
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize content with default language
+      updateContent(currentLanguage);
+
+      const languageSelector = document.querySelector('.language-selector');
+      const languageDropdown = document.querySelector('.language-dropdown');
+      const hamburger = document.querySelector('.hamburger');
+      const navLinks = document.querySelector('.nav-links');
+
+      if (!languageSelector || !languageDropdown || !hamburger || !navLinks) {
+        console.error('One or more critical DOM elements are missing.');
+        return;
+      }
+
+      // Populate language dropdown
+      languageOptions.forEach(option => {
+        const div = document.createElement('div');
+        div.className = 'language-option';
+        div.innerHTML = `<img src="${option.flag}" alt="${option.name} flag"> ${option.name}`;
+        div.dataset.lang = option.code;
+        languageDropdown.appendChild(div);
+      });
+
+      // Language selector toggle
+      languageSelector.addEventListener('click', () => {
+        languageDropdown.classList.toggle('active');
+      });
+
+      // Language selection
+      languageDropdown.addEventListener('click', (e) => {
+        const langOption = e.target.closest('.language-option');
+        if (langOption) {
+          const newLanguage = langOption.dataset.lang;
+          if (translations[newLanguage]) {
+            currentLanguage = newLanguage;
+            updateContent(currentLanguage);
+          } else {
+            console.warn(`Selected language "${newLanguage}" is not available.`);
+          }
+          languageDropdown.classList.remove('active');
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!languageSelector.contains(e.target) && !languageDropdown.contains(e.target)) {
+          languageDropdown.classList.remove('active');
+        }
+      });
+
+      // Hamburger menu toggle
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+      });
+    });
+  </script>
+
+<nav class="navbar py-4 px-6 flex justify-between items-center">
+  <h1 class="text-2xl font-bold text-white"></h1>
+  <div class="flex items-center justify-center flex-grow">
+    <div class="language-selector-container">
+      <div class="language-selector">
+        <img src="flags/gb.png" alt="Language flag" class="w-6 h-6">
+        <span>English</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </div>
+      <div class="language-dropdown"></div>
+    </div>
+  </div>
+  <div class="flex items-center gap-4">
+    <div class="nav-links flex gap-4 sm:flex-row sm:static sm:bg-transparent sm:p-0">
+      <a id="nav-home" href="index.html" class="text-gray-300 hover:text-white transition"></a>
+      <a id="nav-myportalscommands" href="myportalscommands.html" class="text-gray-300 hover:text-white transition"></a>
+      <a id="nav-myredeemplus" href="myredeemplus.html" class="text-gray-300 hover:text-white transition"></a>
+    </div>
+    <div class="hamburger sm:hidden">☰</div>
+  </div>
+</nav>
+
+  <main class="container mx-auto py-20 px-6 max-w-4xl">
+    <section class="mb-12">
+      <h2 id="section-title" class="text-3xl font-bold mb-4"></h2>
+      <p id="section-desc" class="text-lg mb-4"></p>
+      <p id="rating" class="mb-2"></p>
+      <p id="downloads" class="mb-2"></p>
+      <p id="updated" class="mb-2"></p>
+    </section>
+
+    <section class="mb-12">
+      <h2 id="tutorial-title" class="text-2xl font-bold mb-4"></h2>
+      <p id="tutorial-desc" class="mb-4"></p>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/_-qVicvzgtU" title="MyPortalsCommands Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 id="installation-title" class="text-2xl font-bold mb-4"></h2>
+      <ol id="installation-steps" class="list-decimal list-inside space-y-2"></ol>
+    </section>
+
+    <section class="mb-12">
+      <h2 id="commands-title" class="text-2xl font-bold mb-4"></h2>
+      <p id="commands-alias" class="mb-2"></p>
+      <ul id="commands-list" class="list-disc list-inside space-y-2"></ul>
+      <p id="commands-permission" class="mt-4"></p>
+    </section>
+
+    <section class="mb-12">
+      <h2 id="config-title" class="text-2xl font-bold mb-4"></h2>
+      <p id="config-desc" class="mb-4"></p>
+      <pre><code># Example configuration
+block_during_combat: true
+plugins:
+  - CombatLogX
+  - DeluxeCombat
+  - PvPManager
+</code></pre>
+      <p class="text-gray-300 mt-4">All messages are configurable in the <code>messages</code> section of the config file. The <code>combat</code> section allows integration with combat plugins:</p>
+      <ul class="list-disc list-inside text-gray-300">
+        <li><code>block_during_combat: true</code> - Prevents portal usage when a player is in combat, if enabled.</li>
+        <li><code>plugins</code> - Lists supported combat plugins (<code>CombatLogX</code>, <code>DeluxeCombat</code>, <code>PvPManager</code>) that the plugin checks for combat status.</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-2">Support</h3>
+      <p class="text-gray-300 mb-4">Found a bug or need help? Join our Discord server for fast and excellent support: <a href="https://discord.gg/yAEj4hvutT" target="_blank" class="text-blue-400 hover:underline">Join Discord</a>.</p>
+      <p class="text-gray-300">Please do not report bugs in SpigotMC reviews. Use the Discord server for bug reports and support requests.</p>
+
+      <h3 class="text-xl font-semibold mt-8 mb-2">Terms of Service</h3>
+      <ul class="list-disc list-inside text-gray-300">
+        <li>You cannot sell this plugin.</li>
+        <li>You cannot decompile it.</li>
+        <li>You cannot use parts of the plugin code.</li>
+        <li>You cannot claim this plugin as your own.</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mt-8 mb-2">Reviews</h3>
+      <p class="text-gray-300 mb-4">Our community loves MyPortalsCommands! With an average rating of <strong>5/5</strong> from 24 reviews on SpigotMC, here’s what users are saying:</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by RetryR1</span>
+          </div>
+          <p class="text-gray-300">"Great Plugin Easy and Fast Discord Support. You doing Big Buddy make some more cool Plugins ;)"</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by Fred777789</span>
+          </div>
+          <p class="text-gray-300">"EXCELLENT customer support! He hopped on my server and helped fix my problem! What kind of support does that? 100/10 great plugin WOULD recommend! :D"</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by theowrld2323jdf</span>
+          </div>
+          <p class="text-gray-300">"Excellent support, I joined the Discord to report a bug and it was fixed immediately! Great plugin too, just what I needed."</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by Kynnuu</span>
+          </div>
+          <p class="text-gray-300">"Really good plugin, nice support in discord (very fast updates). But i would like to have web page of documentation, it will be really helpfull."</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by VOID3H3</span>
+          </div>
+          <p class="text-gray-300">"Very good plugin, it works very good there is nothing else needed :)"</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by twenny</span>
+          </div>
+          <p class="text-gray-300">"Good Plugin, Excellent Support, Appreciate the Work! Asked for an Feature in the Plugin, and on the Next Day the Feature was inside! :)"</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by livixis</span>
+          </div>
+          <p class="text-gray-300">"amazing plugin and the dev helps you out if you get stuck! I use it with rtp and it works like a dream!"</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by Schreiber_</span>
+          </div>
+          <p class="text-gray-300">"Used it for the last few months, works like a charm. Had some problems after an update (Sound not working and stuff) Joined the discord, and got help emidiately. Easy to use."</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by sonoezee</span>
+          </div>
+          <p class="text-gray-300">"This plugin transformed how we manage player interactions on our server! The ability to set custom commands for portals is a game-changer, and the GUI makes setup a breeze. Highly reliable and a must-have for any server!"</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center mb-2">
+            <span class="star">★★★★★</span>
+            <span class="ml-2 text-gray-400 text-sm">by Maliny4</span>
+          </div>
+          <p class="text-gray-300">"really perfect plugin for 1.21 version! The developer is a cool man, who can help you with ur problem!"</p>
+        </div>
+      </div>
+      <p class="text-gray-300 text-center">Have you tried MyPortalsCommands? Share your feedback on <a href="https://www.spigotmc.org/resources/myportalscommands-1-9-1-21-8.109345/reviews" target="_blank" class="text-blue-400 hover:underline">SpigotMC</a> and help our community grow!</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-8 bg-gray-900 text-center text-gray-400 w-full">
+    <p>&copy; 2025 OkiTask. All rights reserved.</p>
+    <p class="mt-2">
+      Follow me on 
+      <a href="https://www.spigotmc.org/resources/authors/itsokami_.1705594/" target="_blank" class="text-blue-400 hover:text-blue-300">SpigotMC</a> | 
+      <a href="https://builtbybit.com/creators/okitask.308103" target="_blank" class="text-blue-400 hover:text-blue-300">BuiltByBit</a> | 
+      Join <a href="https://discord.gg/yAEj4hvutT" target="_blank" class="text-blue-400 hover:text-blue-300">Discord</a>
+    </p>
+  </footer>
+
+  <script>
+    // Smooth scrolling for sidebar links (if applicable)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
