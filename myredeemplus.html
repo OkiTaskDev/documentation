@@ -1351,12 +1351,6 @@
       updateElement('#support-title', t.support_title);
       updateElement('#support-desc', t.support_desc);
       updateElement('#support-note', t.support_note);
-      updateElement('#tos-title', t.tos_title);
-
-      const tosList = document.querySelector('#tos-list');
-      if (tosList) {
-        tosList.innerHTML = t.tos_list.map(item => `<li>${item}</li>`).join('');
-      }
 
       updateElement('#reviews-title', t.reviews_title);
       updateElement('#reviews-desc', t.reviews_desc);
